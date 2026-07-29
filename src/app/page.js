@@ -1,65 +1,281 @@
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Image from "next/image";
+import Link from "next/link";
+import Reveal from "@/components/Reveal";
+import RotatingProvince from "@/components/RotatingProvince";
+import DestinationMarquee from "@/components/DestinationMarquee";
+import { getPublicTrips } from "@/lib/data/trips";
+import { getPublicDestinations } from "@/lib/data/destinations";
+import { getPublicTestimonials } from "@/lib/data/testimonials";
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function Home() {
+  const [allTrips, destinations, testimonials] = await Promise.all([
+    getPublicTrips(),
+    getPublicDestinations(),
+    getPublicTestimonials(),
+  ]);
+
+  const trips = allTrips.slice(0, 4);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <>
+      <Navbar />
+
+      {/* Hero */}
+      <section className="relative min-h-screen w-full bg-dark overflow-hidden flex flex-col items-center justify-center text-center px-6">
+        <div
+          className="hero-dots absolute inset-0"
+          style={{
+            backgroundImage: `
+      radial-gradient(circle, rgba(255,255,255,0.18) 1.5px, transparent 1.5px),
+      radial-gradient(circle, rgba(255,255,255,0.14) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)
+    `,
+            backgroundSize: "56px 56px, 83px 71px, 37px 97px",
+            backgroundPosition: "0 0, 20px 35px, 45px 10px",
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.js file.
+
+        <div className="relative z-10 max-w-5xl pt-24 md:pt-16">
+          <div
+            className="fade-up-in flex items-center justify-center gap-4 mb-6"
+            style={{ animationDelay: "0.1s" }}
+          >
+            <span className="h-px w-10 bg-gold" />
+            <span className="text-gold text-xs font-semibold tracking-[0.2em] uppercase">
+              Ariana Expeditions
+            </span>
+            <span className="h-px w-10 bg-gold" />
+          </div>
+
+          <h1
+            className="fade-up-in font-heading font-extrabold text-3xl md:text-3xl lg:text-6xl text-white leading-[1.05] mb-6"
+            style={{ animationDelay: "0.25s" }}
+          >
+            Afghanistan <br className="hidden md:block" />
+            <span className="italic text-gold">Beyond the Headlines</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+
+          <p
+            className="fade-up-in text-white/90 text-lg md:text-xl mb-3"
+            style={{ animationDelay: "0.4s" }}
+          >
+            Explore breathtaking <RotatingProvince />
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+
+          <p
+            className="fade-up-in text-white/90 text-lg md:text-xl max-w-2xl mx-auto mb-10"
+            style={{ animationDelay: "0.5s" }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+            Guided journeys through ancient Silk Road cities, turquoise lakes,
+            and timeless mountain landscapes — crafted for travelers who seek
+            what few others have experienced.
+          </p>
+
+          <div
+            className="fade-up-in flex flex-wrap items-center justify-center gap-4"
+            style={{ animationDelay: "0.65s" }}
+          >
+            <Link
+              href="/trips"
+              className="bg-gold hover:bg-white transition-colors duration-300 text-dark font-semibold px-8 py-3 rounded"
+            >
+              Explore Trips
+            </Link>
+            <Link
+              href="/plan-your-trip"
+              className="border border-white/30 hover:border-gold hover:text-gold transition-colors duration-300 text-white font-semibold px-8 py-3 rounded"
+            >
+              Plan My Trip
+            </Link>
+          </div>
+        </div>
+
+        <div className="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
+          <span className="text-white/50 text-xs tracking-widest uppercase">
+            Scroll
+          </span>
+          <svg
+            className="w-5 h-5 text-gold"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={1.8}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M19 9l-7 7-7-7"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </svg>
         </div>
-      </main>
-    </div>
+      </section>
+
+      {/* Intro */}
+      <Reveal>
+        <section className="max-w-3xl mx-auto text-center px-6 py-20">
+          <h2 className="font-heading text-3xl mb-6">
+            Your Journey Begins Here
+          </h2>
+          <p className="text-charcoal leading-relaxed">
+            With over four years of experience guiding travelers across
+            Afghanistan, Ariana Expeditions combines international perspective
+            with deep local knowledge to create journeys that go beyond the
+            ordinary — from the turquoise lakes of Bamyan to the timeless
+            streets of Herat.
+          </p>
+        </section>
+      </Reveal>
+
+      {/* Destinations preview */}
+      <section className="max-w-6xl mx-auto px-6 pb-20">
+        <Reveal>
+          <h2 className="font-heading text-3xl text-center mb-10">
+            Explore by Theme
+          </h2>
+        </Reveal>
+
+        {destinations.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            {destinations.slice(0, 3).map((d, i) => (
+              <Reveal key={d.id} delay={i * 120}>
+                <div className="group overflow-hidden rounded-lg shadow-md">
+                  <div className="relative h-64 overflow-hidden">
+                    <Image
+                      src={d.img || "/images/hero1.jpg"}
+                      alt={d.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                  </div>
+                  <div className="bg-white p-5 text-center">
+                    <h3 className="font-heading text-xl mb-1">{d.title}</h3>
+                    <p className="text-charcoal text-sm">{d.tag}</p>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        )}
+
+        <Reveal delay={300}>
+          <DestinationMarquee />
+        </Reveal>
+      </section>
+
+      {/* Featured trips */}
+      <section className="bg-white py-20 px-6">
+        <div className="max-w-6xl mx-auto">
+          <Reveal>
+            <div className="text-center mb-12">
+              <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+                Curated Itineraries
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl mt-2">
+                Featured Trips
+              </h2>
+              <p className="text-charcoal max-w-xl mx-auto mt-3">
+                Explore Afghanistan — or let us tailor a journey just for you.
+              </p>
+            </div>
+          </Reveal>
+
+          {trips.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {trips.map((t, i) => (
+                <Reveal key={t.id} delay={i * 100}>
+                  <Link
+                    href={`/trips/${t.slug}`}
+                    className="group block h-full bg-cream rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                  >
+                    <div className="relative h-44 overflow-hidden">
+                      <Image
+                        src={t.img || "/images/hero1.jpg"}
+                        alt={t.title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                      />
+                      <span className="absolute top-3 right-3 bg-gold text-dark text-xs font-semibold px-3 py-1 rounded-full">
+                        {t.days}
+                      </span>
+                    </div>
+                    <div className="p-5 flex flex-col">
+                      <h3 className="font-heading text-lg mb-2 leading-snug">
+                        {t.title}
+                      </h3>
+                      <p className="text-charcoal text-sm mb-4 flex-1">
+                        {t.description}
+                      </p>
+                      <span className="text-gold text-sm font-medium group-hover:underline">
+                        View Itinerary →
+                      </span>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          ) : (
+            <p className="text-charcoal text-center">
+              Trips are being added soon — check back shortly.
+            </p>
+          )}
+
+          <Reveal delay={400}>
+            <div className="text-center mt-12">
+              <Link
+                href="/trips"
+                className="inline-block border border-dark text-dark hover:bg-dark hover:text-white transition-colors duration-300 font-semibold px-8 py-3 rounded"
+              >
+                View All Trips
+              </Link>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      {testimonials.length > 0 && (
+        <section className="bg-cream py-20 px-6">
+          <div className="max-w-5xl mx-auto">
+            <Reveal>
+              <div className="text-center mb-12">
+                <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+                  Traveler Stories
+                </span>
+                <h2 className="font-heading text-3xl md:text-4xl mt-2 text-dark">
+                  What Our Travelers Say
+                </h2>
+              </div>
+            </Reveal>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {testimonials.map((t, i) => (
+                <Reveal key={t.id} delay={i * 120}>
+                  <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
+                    <span className="text-gold text-3xl font-heading mb-2">
+                      &ldquo;
+                    </span>
+                    <p className="text-charcoal text-sm leading-relaxed flex-1 mb-4">
+                      {t.quote}
+                    </p>
+                    <div>
+                      <p className="font-heading text-dark text-sm">{t.name}</p>
+                      <p className="text-charcoal/60 text-xs">{t.location}</p>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      <Footer />
+    </>
   );
 }
