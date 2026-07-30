@@ -147,7 +147,7 @@ export default function AdminLogin() {
 
               <form
                 onSubmit={handleSubmit}
-                className="bg-white rounded-2xl shadow-sm p-8 space-y-5"
+                className="bg-white rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-8 space-y-5"
               >
                 {error && (
                   <p className="text-red-600 text-sm bg-red-50 rounded px-3 py-2">
@@ -229,7 +229,7 @@ export default function AdminLogin() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-gold hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold py-3 rounded disabled:opacity-60"
+                  className="w-full bg-gold cursor-pointer hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold py-3 rounded disabled:opacity-60"
                 >
                   {loading ? "Signing in..." : "Sign In"}
                 </button>

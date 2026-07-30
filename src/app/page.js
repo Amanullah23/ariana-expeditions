@@ -39,7 +39,7 @@ export default async function Home() {
           }}
         />
 
-        <div className="relative z-10 max-w-5xl pt-24 md:pt-16">
+        <div className="relative z-10 max-w-5xl mt-16  pt-24 md:pt-16">
           <div
             className="fade-up-in flex items-center justify-center gap-4 mb-6"
             style={{ animationDelay: "0.1s" }}

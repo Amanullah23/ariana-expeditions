@@ -3,7 +3,7 @@ import { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
 
-export default function AdminShell({ children }) {
+export default function AdminShell({ children, notificationBadge }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
 
@@ -18,7 +18,10 @@ export default function AdminShell({ children }) {
       <div
         className={`transition-all duration-300 ${collapsed ? "md:ml-20" : "md:ml-72"}`}
       >
-        <AdminTopbar onMenuClick={() => setMobileOpen(true)} />
+        <AdminTopbar
+          onMenuClick={() => setMobileOpen(true)}
+          notificationBadge={notificationBadge}
+        />
         <main className="px-4 md:px-8 py-8 max-w-6xl mx-auto">{children}</main>
       </div>
     </div>

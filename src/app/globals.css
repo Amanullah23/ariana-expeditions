@@ -123,3 +123,80 @@
     animation: none;
   }
 }
+/* Smooth scroll for all anchor jumps (quick-jump navs, back-to-top, etc.) */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Universal press feedback — works on every button/link site-wide with no per-component edits */
+button,
+a {
+  transition:
+    transform 0.15s ease,
+    opacity 0.15s ease;
+}
+
+button:active,
+a:active {
+  transform: scale(0.97);
+}
+
+/* Gentle focus ring for keyboard navigation (accessibility + polish) */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Reusable entrance animation for modals/popups */
+@keyframes modal-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-backdrop {
+  animation: backdrop-fade-in 0.2s ease-out;
+}
+
+.modal-panel {
+  animation: modal-pop-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  a {
+    transition: none;
+  }
+  button:active,
+  a:active {
+    transform: none;
+  }
+  .modal-backdrop,
+  .modal-panel {
+    animation: none;
+  }
+}

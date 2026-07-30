@@ -82,7 +82,7 @@ export default function AdminTripsList() {
           {trips.map((t) => (
             <div
               key={t.id}
-              className="bg-white rounded-2xl shadow-sm overflow-hidden flex"
+              className="bg-white rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex"
             >
               <div className="relative w-32 shrink-0">
                 <Image

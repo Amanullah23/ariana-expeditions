@@ -20,7 +20,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }) {
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center px-4"
+      className="modal-backdrop fixed inset-0 z-[100] bg-black/90 flex items-center justify-center px-4"
       onClick={onClose}
     >
       <button

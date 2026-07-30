@@ -174,7 +174,10 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mb-8">
         {stats.map((s) => (
-          <div key={s.label} className="bg-white rounded-2xl shadow-sm p-5">
+          <div
+            key={s.label}
+            className="bg-white rounded-2xl shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
+          >
             <span
               className={`inline-flex items-center justify-center w-11 h-11 rounded-xl mb-4 ${s.badge}`}
             >

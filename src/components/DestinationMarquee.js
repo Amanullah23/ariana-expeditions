@@ -4,47 +4,47 @@ const items = [
   {
     title: "Echoes of Ariana",
     desc: "Herat, Balkh, Kabul",
-    img: "https://picsum.photos/seed/echoes-ariana/600/450",
+    img: "/images/echoes.jpg",
   },
   {
     title: "Valleys of Time",
     desc: "Bamyan, Band-e Amir",
-    img: "https://picsum.photos/seed/valleys-time/600/450",
+    img: "/images/vally.jpeg",
   },
   {
     title: "Mountains & Nomads",
     desc: "Wakhan, Hindu Kush",
-    img: "https://picsum.photos/seed/mountains-nomads/600/450",
+    img: "/images/hindukush.png",
   },
   {
     title: "Minaret of Jam",
     desc: "Ghor Province",
-    img: "https://picsum.photos/seed/minaret-jam/600/450",
+    img: "/images/jam.jpeg",
   },
   {
     title: "Band-e Amir",
     desc: "Afghanistan's First National Park",
-    img: "https://picsum.photos/seed/band-e-amir-2/600/450",
+    img: "/images/bameyan.jpeg",
   },
   {
     title: "Blue Mosque",
     desc: "Herat",
-    img: "https://picsum.photos/seed/blue-mosque/600/450",
+    img: "/images/bluem.jpg",
   },
   {
     title: "Wakhan Corridor",
     desc: "The Roof of Central Asia",
-    img: "https://picsum.photos/seed/wakhan-corridor/600/450",
+    img: "/images/wakhan.jpg",
   },
   {
     title: "Shahr-e Gholghola",
     desc: "The City of Screams",
-    img: "https://picsum.photos/seed/shahr-e-gholghola/600/450",
+    img: "/images/gholghola.jpeg",
   },
   {
     title: "Kandahar",
     desc: "The Historic South",
-    img: "https://picsum.photos/seed/kandahar/600/450",
+    img: "/images/hero2.jpg",
   },
 ];
 

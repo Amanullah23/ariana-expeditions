@@ -14,12 +14,12 @@ export default function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[100] bg-black/50 flex items-center justify-center px-4"
+      className="modal-backdrop fixed inset-0 z-[100] bg-black/50 flex items-center justify-center px-4"
       onClick={onCancel}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6"
+        className="modal-panel bg-white rounded-2xl shadow-xl max-w-sm w-full p-6"
       >
         <div className="flex items-start gap-4 mb-5">
           <span

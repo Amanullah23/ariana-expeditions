@@ -81,7 +81,7 @@ export default function AdminTestimonialsList() {
           {testimonials.map((t) => (
             <div
               key={t.id}
-              className="bg-white rounded-2xl shadow-sm p-6 flex flex-col"
+              className="bg-white rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-6 flex flex-col"
             >
               <span className="text-gold text-3xl font-heading mb-2">
                 &ldquo;

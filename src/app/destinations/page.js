@@ -37,7 +37,7 @@ export default async function Destinations() {
       </section>
 
       {groups.length > 0 && (
-        <section className="bg-white border-b border-dark/10 px-6 py-6 sticky top-0 z-30 shadow-sm">
+        <section className="bg-white border-b border-dark/10 px-6 py-6 sticky top-0 z-30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
           <Reveal>
             <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-3">
               {groups.map((g) => (

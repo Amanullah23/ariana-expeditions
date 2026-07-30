@@ -3,6 +3,13 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
+import { createClient } from "@/lib/supabase/client";
+import {
+  FaPhone,
+  FaWhatsapp,
+  FaEnvelope,
+  FaLocationDot,
+} from "react-icons/fa6";
 
 const contactCards = [
   {
@@ -12,21 +19,7 @@ const contactCards = [
     phone: "+31 6 17285552",
     whatsapp: "https://wa.me/31617285552",
     email: "info@arianaexpeditions.com",
-    icon: (
-      <svg
-        className="w-7 h-7"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-        />
-      </svg>
-    ),
+    icon: <FaEnvelope className="w-7 h-7" />,
   },
   {
     label: "Kabul Office",
@@ -35,26 +28,7 @@ const contactCards = [
     phone: "+93 78 787382",
     whatsapp: "https://wa.me/93789889592",
     email: "jalal.mosavi@arianaexpeditions.com",
-    icon: (
-      <svg
-        className="w-7 h-7"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
+    icon: <FaLocationDot className="w-7 h-7" />,
   },
   {
     label: "Germany Office",
@@ -63,26 +37,7 @@ const contactCards = [
     phone: "+31 6 17285552",
     whatsapp: "https://wa.me/31617285552",
     email: "rik@arianaexpeditions.com",
-    icon: (
-      <svg
-        className="w-7 h-7"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.5}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M17.657 16.657L13.414 20.9a2 2 0 01-2.828 0l-4.243-4.243a8 8 0 1111.314 0z"
-        />
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-        />
-      </svg>
-    ),
+    icon: <FaLocationDot className="w-7 h-7" />,
   },
 ];
 
@@ -100,7 +55,20 @@ export default function Contact() {
         body: data,
         headers: { Accept: "application/json" },
       });
+
       if (res.ok) {
+        // Also save to Supabase so it shows up in the admin dashboard
+        const supabase = createClient();
+        await supabase.from("inquiries").insert({
+          fullname: data.get("fullname"),
+          email: data.get("email"),
+          phone: data.get("phone"),
+          preferred_trip: data.get("preferredTrip"),
+          travel_dates: data.get("travelDates"),
+          travelers: data.get("travelers"),
+          message: data.get("message"),
+        });
+
         setSubmitted(true);
         form.reset();
       } else {
@@ -159,19 +127,7 @@ export default function Contact() {
                     className="group flex items-center gap-3 text-sm text-charcoal hover:text-dark transition-colors duration-200"
                   >
                     <span className="shrink-0 w-9 h-9 rounded-full bg-dark/8 group-hover:bg-dark flex items-center justify-center transition-colors duration-200">
-                      <svg
-                        className="w-4.5 h-4.5 text-dark group-hover:text-gold transition-colors duration-200"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M2.25 6.75c0 8.284 6.716 15 15 15h1.5a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
-                        />
-                      </svg>
+                      <FaPhone className="w-4.5 h-4.5 text-dark group-hover:text-gold transition-colors duration-200" />
                     </span>
                     <span className="font-medium">{c.phone}</span>
                   </a>
@@ -182,14 +138,7 @@ export default function Contact() {
                     className="group flex items-center gap-3 text-sm text-charcoal hover:text-dark transition-colors duration-200"
                   >
                     <span className="shrink-0 w-9 h-9 rounded-full bg-[#25D366]/15 group-hover:bg-[#25D366] flex items-center justify-center transition-colors duration-200">
-                      <svg
-                        className="w-4.5 h-4.5 text-[#25D366] group-hover:text-white transition-colors duration-200"
-                        fill="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z" />
-                        <path d="M12.004 2C6.478 2 2 6.478 2 12.004c0 1.858.502 3.665 1.453 5.243L2 22l4.887-1.417a9.96 9.96 0 004.117.876h.005c5.526 0 10.004-4.478 10.004-10.004C21.013 6.478 16.53 2 12.004 2zm5.836 15.833a8.286 8.286 0 01-5.831 2.42h-.004a8.311 8.311 0 01-4.235-1.16l-.303-.18-3.15.913.842-3.07-.198-.315a8.28 8.28 0 01-1.27-4.437c0-4.583 3.73-8.312 8.317-8.312a8.26 8.26 0 015.878 2.437 8.259 8.259 0 012.436 5.878 8.29 8.29 0 01-2.482 5.826z" />
-                      </svg>
+                      <FaWhatsapp className="w-4.5 h-4.5 text-[#25D366] group-hover:text-white transition-colors duration-200" />
                     </span>
                     <span className="font-medium">WhatsApp</span>
                   </a>
@@ -199,19 +148,7 @@ export default function Contact() {
                     className="group flex items-center gap-3 text-sm text-charcoal hover:text-dark transition-colors duration-200"
                   >
                     <span className="shrink-0 w-9 h-9 rounded-full bg-gold/20 group-hover:bg-gold flex items-center justify-center transition-colors duration-200">
-                      <svg
-                        className="w-4.5 h-4.5 text-gold group-hover:text-dark transition-colors duration-200"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={1.8}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                        />
-                      </svg>
+                      <FaEnvelope className="w-4.5 h-4.5 text-gold group-hover:text-dark transition-colors duration-200" />
                     </span>
                     <span className="font-medium break-all">{c.email}</span>
                   </a>

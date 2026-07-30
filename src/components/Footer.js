@@ -2,15 +2,22 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 import {
   FaWhatsapp,
   FaInstagram,
   FaYoutube,
   FaThreads,
   FaTiktok,
+  FaFacebookF,
 } from "react-icons/fa6";
 
 const socialLinks = [
+  {
+    name: "Facebook",
+    href: "https://www.facebook.com/share/1BhJzeDQ1u/",
+    icon: <FaFacebookF className="w-4 h-4" />,
+  },
   {
     name: "WhatsApp",
     href: "https://wa.me/93789889592",
@@ -67,7 +74,12 @@ export default function Footer() {
           "Content-Type": "application/json",
         },
       });
+
       if (res.ok) {
+        // Also save to Supabase so it shows up in the admin dashboard
+        const supabase = createClient();
+        await supabase.from("newsletter_signups").insert({ email });
+
         setStatus("success");
         setEmail("");
       } else {
@@ -237,7 +249,7 @@ export default function Footer() {
                   d="M2.25 6.75c0 8.284 6.716 15 15 15h1.5a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"
                 />
               </svg>
-              +31 1617 2855 52
+              +93 78 988 592
             </li>
           </ul>
         </div>

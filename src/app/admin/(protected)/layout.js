@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import AdminShell from "@/components/admin/AdminShell";
+import NotificationBadge from "@/components/admin/NotificationBadge";
 
 export const metadata = {
   title: "Admin Dashboard | Ariana Expeditions",
@@ -16,9 +17,6 @@ export default async function AdminLayout({ children }) {
     redirect("/admin/login");
   }
 
-  // Check the session's actual authenticator assurance level.
-  // If this account has 2FA enrolled, the session MUST have reached AAL2
-  // (password + verified MFA) — not just AAL1 (password only).
   const { data: aalData } =
     await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
 
@@ -26,5 +24,9 @@ export default async function AdminLayout({ children }) {
     redirect("/admin/login");
   }
 
-  return <AdminShell>{children}</AdminShell>;
+  return (
+    <AdminShell notificationBadge={<NotificationBadge />}>
+      {children}
+    </AdminShell>
+  );
 }

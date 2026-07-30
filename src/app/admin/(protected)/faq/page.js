@@ -93,7 +93,7 @@ export default function AdminFaqList() {
                 {categoryItems.map((item) => (
                   <div
                     key={item.id}
-                    className="bg-white rounded-2xl shadow-sm p-5 flex items-start justify-between gap-4"
+                    className="bg-white rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 p-5 flex items-start justify-between gap-4"
                   >
                     <div className="flex-1">
                       <p className="text-dark text-sm font-medium mb-1">
