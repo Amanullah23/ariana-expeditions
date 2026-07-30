@@ -33,7 +33,7 @@ const contactCards = [
     name: "Mr. Jalal Mosavi",
     role: "Co-Founder & Guide, Kabul, Afghanistan",
     phone: "+93 78 787382",
-    whatsapp: "https://wa.me/9378787382",
+    whatsapp: "https://wa.me/93789889592",
     email: "jalal.mosavi@arianaexpeditions.com",
     icon: (
       <svg
