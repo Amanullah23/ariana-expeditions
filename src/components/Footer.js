@@ -2,62 +2,39 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  FaWhatsapp,
+  FaInstagram,
+  FaYoutube,
+  FaThreads,
+  FaTiktok,
+} from "react-icons/fa6";
 
 const socialLinks = [
   {
-    name: "Instagram",
-    href: "https://instagram.com",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.6}
-      >
-        <rect x="3" y="3" width="18" height="18" rx="5" />
-        <circle cx="12" cy="12" r="3.5" />
-        <circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none" />
-      </svg>
-    ),
-  },
-  {
-    name: "Facebook",
-    href: "https://facebook.com",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.6}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M14 9h3V6h-3a3 3 0 00-3 3v2H9v3h2v6h3v-6h3l1-3h-4v-2c0-.552.448-1 1-1z"
-        />
-      </svg>
-    ),
-  },
-  {
     name: "WhatsApp",
-    href: "https://wa.me/93XXXXXXXXX",
-    icon: (
-      <svg
-        className="w-5 h-5"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        strokeWidth={1.6}
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          d="M3 21l1.65-4.95A8.25 8.25 0 1110 20.4L3 21z"
-        />
-      </svg>
-    ),
+    href: "https://wa.me/31617285552",
+    icon: <FaWhatsapp className="w-4 h-4" />,
+  },
+  {
+    name: "Instagram",
+    href: "https://www.instagram.com/discover_afghanistan1?igsh=b21mMm0yZnRjZHlo&utm_source=qr",
+    icon: <FaInstagram className="w-4 h-4" />,
+  },
+  {
+    name: "YouTube",
+    href: "https://www.youtube.com/@Discover_Afghanistan-p8l",
+    icon: <FaYoutube className="w-4 h-4" />,
+  },
+  {
+    name: "Threads",
+    href: "https://www.threads.com/@discover_afghanistan1?xmt=AQG0_ZU4T1UoZN9MIxrBetPbcc9mr6qbxA_nKkxL4ffK3qU",
+    icon: <FaThreads className="w-4 h-4" />,
+  },
+  {
+    name: "TikTok",
+    href: "https://www.tiktok.com/@ariana_expeditions",
+    icon: <FaTiktok className="w-4 h-4" />,
   },
 ];
 
@@ -164,7 +141,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.name}
-                className="w-9 h-9 flex items-center justify-center rounded-full border border-white/20 hover:border-gold hover:text-gold transition-colors duration-200"
+                className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-white/30 text-white hover:border-gold hover:bg-gold hover:text-dark transition-all duration-200"
               >
                 {s.icon}
               </a>

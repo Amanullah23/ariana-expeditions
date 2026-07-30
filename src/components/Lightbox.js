@@ -26,7 +26,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }) {
       <button
         onClick={onClose}
         aria-label="Close"
-        className="absolute top-6 right-6 text-white/80 hover:text-gold text-3xl"
+        className="absolute top-6 right-6 w-11 h-11 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 hover:bg-white/20 hover:text-gold transition-all duration-200 text-3xl"
       >
         ✕
       </button>
@@ -37,7 +37,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }) {
           onNavigate((index - 1 + images.length) % images.length);
         }}
         aria-label="Previous image"
-        className="absolute left-4 md:left-8 text-white/80 hover:text-gold text-4xl"
+        className="absolute left-4 md:left-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 hover:bg-white/20 hover:text-gold transition-all duration-200 text-4xl"
       >
         ‹
       </button>
@@ -61,7 +61,7 @@ export default function Lightbox({ images, index, onClose, onNavigate }) {
           onNavigate((index + 1) % images.length);
         }}
         aria-label="Next image"
-        className="absolute right-4 md:right-8 text-white/80 hover:text-gold text-4xl"
+        className="absolute right-4 md:right-8 w-12 h-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white/90 hover:bg-white/20 hover:text-gold transition-all duration-200 text-4xl"
       >
         ›
       </button>

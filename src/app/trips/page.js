@@ -50,7 +50,7 @@ export default async function Trips() {
                   sizes="(max-width: 640px) 100vw, 50vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                 />
-                <div className="absolute top-4 right-4 bg-gold text-dark text-xs font-semibold px-3 py-1 rounded-full">
+                <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-semibold px-3 py-1 rounded-full">
                   {t.days}
                 </div>
               </div>
