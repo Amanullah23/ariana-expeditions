@@ -130,7 +130,7 @@ export default function Navbar() {
         />
 
         <div
-          className={`absolute top-0 right-0 h-full w-full max-w-sm bg-dark shadow-2xl transition-transform duration-300 ease-out flex flex-col ${
+          className={`absolute top-0 right-0 h-full w-[60%] max-w-sm bg-dark shadow-2xl transition-transform duration-300 ease-out flex flex-col ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
