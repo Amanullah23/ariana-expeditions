@@ -124,13 +124,13 @@ export default function Navbar() {
       >
         <div
           onClick={() => setOpen(false)}
-          className={`absolute inset-0 bg-black/60 transition-opacity duration-300 ${
+          className={`absolute inset-0 bg-black/85 transition-opacity duration-300 ${
             open ? "opacity-100" : "opacity-0"
           }`}
         />
 
         <div
-          className={`absolute top-0 right-0 h-full w-[80%] max-w-sm bg-dark shadow-2xl transition-transform duration-300 ease-out flex flex-col ${
+          className={`absolute top-0 right-0 h-full w-full max-w-sm bg-dark shadow-2xl transition-transform duration-300 ease-out flex flex-col ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
