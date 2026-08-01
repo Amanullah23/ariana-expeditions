@@ -10,10 +10,6 @@ export default function AdminFaqList() {
   const [loading, setLoading] = useState(true);
   const { confirm, dialogProps } = useConfirm();
 
-  useEffect(() => {
-    loadItems();
-  }, []);
-
   async function loadItems() {
     setLoading(true);
     try {
@@ -24,6 +20,10 @@ export default function AdminFaqList() {
     }
     setLoading(false);
   }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadItems();
+  }, []);
 
   async function handleDelete(id) {
     const ok = await confirm({

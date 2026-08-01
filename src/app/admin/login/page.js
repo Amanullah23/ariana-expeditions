@@ -13,8 +13,7 @@ export default function AdminLogin() {
 
   // 2FA challenge state
   const [needsMfa, setNeedsMfa] = useState(false);
-  const [factorId, setFactorId] = useState(null);
-  const [challengeId, setChallengeId] = useState(null);
+  const [availableFactors, setAvailableFactors] = useState([]);
   const [mfaCode, setMfaCode] = useState("");
 
   const supabase = createClient();
@@ -35,33 +34,21 @@ export default function AdminLogin() {
       return;
     }
 
-    // Check if this account has an active 2FA factor
+    // Check if this account has any active 2FA factors
     const { data: factorsData } = await supabase.auth.mfa.listFactors();
-    const verifiedFactor = factorsData?.totp?.find(
-      (f) => f.status === "verified",
-    );
+    const verifiedFactors =
+      factorsData?.totp?.filter((f) => f.status === "verified") || [];
 
-    if (!verifiedFactor) {
-      // No 2FA enrolled — log straight in
+    if (verifiedFactors.length === 0) {
+      // No 2FA enrolled at all — log straight in
       setLoading(false);
       router.push("/admin");
       router.refresh();
       return;
     }
 
-    // 2FA is enrolled — issue a challenge and show the code prompt
-    const { data: challengeData, error: challengeError } =
-      await supabase.auth.mfa.challenge({ factorId: verifiedFactor.id });
-
     setLoading(false);
-
-    if (challengeError) {
-      setError(challengeError.message);
-      return;
-    }
-
-    setFactorId(verifiedFactor.id);
-    setChallengeId(challengeData.id);
+    setAvailableFactors(verifiedFactors);
     setNeedsMfa(true);
   }
 
@@ -70,22 +57,32 @@ export default function AdminLogin() {
     setError("");
     setLoading(true);
 
-    const { error: verifyError } = await supabase.auth.mfa.verify({
-      factorId,
-      challengeId,
-      code: mfaCode,
-    });
+    // Try the entered code against each enrolled device in turn.
+    // TOTP codes are independent per device, so we don't know in advance
+    // which device the person is using — we just try each until one works.
+    for (const factor of availableFactors) {
+      const { data: challengeData, error: challengeError } =
+        await supabase.auth.mfa.challenge({ factorId: factor.id });
 
-    setLoading(false);
+      if (challengeError) continue;
 
-    if (verifyError) {
-      setError("Invalid code — please try again.");
-      setMfaCode("");
-      return;
+      const { error: verifyError } = await supabase.auth.mfa.verify({
+        factorId: factor.id,
+        challengeId: challengeData.id,
+        code: mfaCode,
+      });
+
+      if (!verifyError) {
+        setLoading(false);
+        router.push("/admin");
+        router.refresh();
+        return;
+      }
     }
 
-    router.push("/admin");
-    router.refresh();
+    setLoading(false);
+    setError("Invalid code — please try again.");
+    setMfaCode("");
   }
 
   return (

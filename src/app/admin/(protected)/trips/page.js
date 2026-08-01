@@ -11,10 +11,6 @@ export default function AdminTripsList() {
   const [loading, setLoading] = useState(true);
   const { confirm, dialogProps } = useConfirm();
 
-  useEffect(() => {
-    loadTrips();
-  }, []);
-
   async function loadTrips() {
     setLoading(true);
     try {
@@ -25,6 +21,10 @@ export default function AdminTripsList() {
     }
     setLoading(false);
   }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadTrips();
+  }, []);
 
   async function handleDelete(id) {
     const ok = await confirm({

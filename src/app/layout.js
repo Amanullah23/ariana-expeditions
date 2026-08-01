@@ -30,7 +30,7 @@ export const metadata = {
     "Afghanistan cultural tours",
     "Afghanistan group tours",
     "Bamiyan tours",
-    "Silk Road Afghanistan",
+    "Ariana Expeditions",
     "Afghanistan photography tour",
     "Afghanistan archaeology tour",
     "Afghanistan travel specialist",
@@ -50,7 +50,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <body className={`${playfair.variable} ${inter.variable}`}>
         <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
         <StructuredData />

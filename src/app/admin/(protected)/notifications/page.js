@@ -55,10 +55,7 @@ export default function AdminNotifications() {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("All");
-
-  useEffect(() => {
-    loadNotifications();
-  }, []);
+  const [now] = useState(() => Date.now());
 
   async function loadNotifications() {
     setLoading(true);
@@ -70,6 +67,10 @@ export default function AdminNotifications() {
     }
     setLoading(false);
   }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadNotifications();
+  }, []);
 
   const unreadCount = notifications.filter((n) => !n.read).length;
 
@@ -107,8 +108,8 @@ export default function AdminNotifications() {
     }
   }
 
-  function timeAgo(dateStr) {
-    const diff = Date.now() - new Date(dateStr).getTime();
+  function timeAgo(dateStr, nowTime) {
+    const diff = nowTime - new Date(dateStr).getTime();
     const mins = Math.floor(diff / 60000);
     if (mins < 60) return `${mins}m ago`;
     const hours = Math.floor(mins / 60);
@@ -185,7 +186,9 @@ export default function AdminNotifications() {
                     )}
                   </div>
                   <p className="text-charcoal text-sm mb-1">{n.detail}</p>
-                  <p className="text-charcoal/50 text-xs">{timeAgo(n.time)}</p>
+                  <p className="text-charcoal/50 text-xs">
+                    {timeAgo(n.time, now)}
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-2 shrink-0">

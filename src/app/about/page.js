@@ -45,7 +45,7 @@ const markets = [
   {
     code: "CN",
     country: "China",
-    desc: "Rising interest in Central Asian and Silk Road heritage travel.",
+    desc: "Rising interest in Central Asian and Ariana Expeditions heritage travel.",
   },
 ];
 

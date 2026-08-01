@@ -8,6 +8,7 @@ export default function MfaEnrollment() {
   const [qrCode, setQrCode] = useState(null);
   const [secret, setSecret] = useState(null);
   const [factorId, setFactorId] = useState(null);
+  const [friendlyName, setFriendlyName] = useState("");
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,23 +16,28 @@ export default function MfaEnrollment() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    loadFactors();
-  }, []);
-
   async function loadFactors() {
     const { data, error } = await supabase.auth.mfa.listFactors();
     if (!error && data) {
       setFactors(data.totp || []);
     }
   }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadFactors();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally run once on mount only
+  }, []);
 
   async function startEnrollment() {
+    if (!friendlyName.trim()) {
+      setError('Give this device a name first (e.g. "Jalal\'s Phone").');
+      return;
+    }
     setError("");
     setEnrolling(true);
     const { data, error } = await supabase.auth.mfa.enroll({
       factorType: "totp",
-      friendlyName: "Ariana Admin 2FA",
+      friendlyName: friendlyName.trim(),
     });
 
     if (error) {
@@ -77,13 +83,14 @@ export default function MfaEnrollment() {
     setEnrolling(false);
     setQrCode(null);
     setCode("");
+    setFriendlyName("");
     loadFactors();
   }
 
-  async function removeFactor(id) {
+  async function removeFactor(id, name) {
     if (
       !confirm(
-        "Remove two-factor authentication? Your account will be less secure.",
+        `Remove "${name}" as a login device? That device will no longer be able to sign in.`,
       )
     )
       return;
@@ -91,7 +98,7 @@ export default function MfaEnrollment() {
     loadFactors();
   }
 
-  const isEnrolled = factors.some((f) => f.status === "verified");
+  const verifiedFactors = factors.filter((f) => f.status === "verified");
 
   return (
     <div className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
@@ -100,47 +107,70 @@ export default function MfaEnrollment() {
           Two-Factor Authentication
         </h2>
         <p className="text-charcoal text-sm">
-          Add an extra layer of security to your admin login using an
-          authenticator app (Google Authenticator, Authy, 1Password, etc.).
+          Each person who logs into this account can add their own authenticator
+          device below — everyone uses the same email and password, but each has
+          their own independent 6-digit code.
         </p>
       </div>
 
-      {isEnrolled && !enrolling && (
-        <div className="flex items-center justify-between bg-gold/10 rounded-lg px-4 py-3">
-          <div className="flex items-center gap-2">
-            <svg
-              className="w-5 h-5 text-gold"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
+      {verifiedFactors.length > 0 && (
+        <div className="space-y-2">
+          {verifiedFactors.map((f) => (
+            <div
+              key={f.id}
+              className="flex items-center justify-between bg-gold/10 rounded-lg px-4 py-3"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 12.75L11.25 15 15 9.75M21 12c0 4.556-3.02 8.373-7.163 9.616a1.5 1.5 0 01-.674 0C8.02 20.373 5 16.556 5 12V6.545c0-.564.34-1.07.86-1.293l6-2.572a1.5 1.5 0 011.28 0l6 2.572c.52.223.86.729.86 1.293V12z"
-              />
-            </svg>
-            <span className="text-dark text-sm font-medium">
-              2FA is enabled
-            </span>
-          </div>
-          <button
-            onClick={() => removeFactor(factors[0].id)}
-            className="text-red-600 text-sm font-medium hover:underline"
-          >
-            Disable
-          </button>
+              <div className="flex items-center gap-2">
+                <svg
+                  className="w-5 h-5 text-gold shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 12.75L11.25 15 15 9.75M21 12c0 4.556-3.02 8.373-7.163 9.616a1.5 1.5 0 01-.674 0C8.02 20.373 5 16.556 5 12V6.545c0-.564.34-1.07.86-1.293l6-2.572a1.5 1.5 0 011.28 0l6 2.572c.52.223.86.729.86 1.293V12z"
+                  />
+                </svg>
+                <span className="text-dark text-sm font-medium">
+                  {f.friendly_name || "Unnamed device"}
+                </span>
+              </div>
+              <button
+                onClick={() =>
+                  removeFactor(f.id, f.friendly_name || "this device")
+                }
+                className="text-red-600 text-sm font-medium hover:underline"
+              >
+                Remove
+              </button>
+            </div>
+          ))}
         </div>
       )}
 
-      {!isEnrolled && !enrolling && (
-        <button
-          onClick={startEnrollment}
-          className="bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold px-6 py-2.5 rounded"
-        >
-          Set Up Two-Factor Authentication
-        </button>
+      {!enrolling && (
+        <div className="space-y-3">
+          <div>
+            <label className="block text-sm font-medium text-dark mb-1">
+              Add a new device
+            </label>
+            <input
+              value={friendlyName}
+              onChange={(e) => setFriendlyName(e.target.value)}
+              placeholder="e.g. Jalal's Phone, Rik's Phone"
+              className="w-full border border-dark/20 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
+            />
+          </div>
+          <button
+            onClick={startEnrollment}
+            className="bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold px-6 py-2.5 rounded"
+          >
+            Add Authenticator Device
+          </button>
+        </div>
       )}
 
       {error && (
@@ -151,7 +181,7 @@ export default function MfaEnrollment() {
 
       {success && (
         <p className="text-gold text-sm bg-gold/10 rounded px-3 py-2">
-          Two-factor authentication is now active on your account.
+          Device added successfully — it can now be used to sign in.
         </p>
       )}
 
@@ -159,7 +189,8 @@ export default function MfaEnrollment() {
         <div className="border border-dark/10 rounded-lg p-5 space-y-4">
           <div>
             <p className="text-dark text-sm font-medium mb-2">
-              1. Scan this QR code with your authenticator app
+              1. Scan this QR code with the authenticator app on{" "}
+              <strong>{friendlyName}</strong>
             </p>
             <div
               className="w-48 h-48 mx-auto bg-white p-2 border border-dark/10 rounded"
@@ -178,7 +209,7 @@ export default function MfaEnrollment() {
 
           <div>
             <p className="text-dark text-sm font-medium mb-2">
-              2. Enter the 6-digit code from your app
+              2. Enter the 6-digit code from that app
             </p>
             <div className="flex gap-3">
               <input

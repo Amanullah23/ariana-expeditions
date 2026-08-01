@@ -10,10 +10,6 @@ export default function AdminTestimonialsList() {
   const [loading, setLoading] = useState(true);
   const { confirm, dialogProps } = useConfirm();
 
-  useEffect(() => {
-    loadTestimonials();
-  }, []);
-
   async function loadTestimonials() {
     setLoading(true);
     try {
@@ -24,6 +20,10 @@ export default function AdminTestimonialsList() {
     }
     setLoading(false);
   }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadTestimonials();
+  }, []);
 
   async function handleDelete(id) {
     const ok = await confirm({

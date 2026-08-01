@@ -25,10 +25,6 @@ export default function AdminSettings() {
 
   const supabase = createClient();
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
   async function loadUser() {
     setLoadingUser(true);
     const {
@@ -42,6 +38,11 @@ export default function AdminSettings() {
     }
     setLoadingUser(false);
   }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps -- one-time load on mount, safe
+    loadUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentionally run once on mount only
+  }, []);
 
   async function handleProfileSubmit(e) {
     e.preventDefault();
