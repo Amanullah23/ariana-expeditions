@@ -49,6 +49,7 @@ const destinationLinks = [
   { label: "Echoes of Ariana", href: "/destinations#echoes-of-ariana" },
   { label: "Valleys of Time", href: "/destinations#valleys-of-time" },
   { label: "Mountains & Nomads", href: "/destinations#mountains-&-nomads" },
+  { label: "Blog", href: "/blog" },
 ];
 
 const exploreLinks = [

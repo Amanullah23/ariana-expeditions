@@ -145,7 +145,7 @@ export default async function Home() {
                 <div className="group overflow-hidden rounded-lg shadow-md">
                   <div className="relative h-64 overflow-hidden">
                     <Image
-                      src={d.img || "/images/hero1.jpg"}
+                      src={d.img || `/images/explore${i + 1}.jpg`}
                       alt={d.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
@@ -194,7 +194,7 @@ export default async function Home() {
                   >
                     <div className="relative h-44 overflow-hidden">
                       <Image
-                        src={t.img || "/images/hero1.jpg"}
+                        src={t.img || "/images/hero2.jpg"}
                         alt={t.title}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

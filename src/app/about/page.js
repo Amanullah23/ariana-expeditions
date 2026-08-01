@@ -7,16 +7,16 @@ import AfghanistanMap from "@/components/AfghanistanMap";
 
 const founders = [
   {
-    name: "Mr. Jalal Mosavi",
-    role: "Founder & Guide, Kabul, Afghanistan",
-    img: "/images/profile1.jpeg",
-    bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.",
-  },
-  {
     name: "Mr. Rik Alexander",
     role: "Co-Founder, Berlin, Germany",
     img: "/images/profile2.jpeg",
     bio: "My connection with Afghanistan began long before I first set foot there. Drawn by its history, cultures, and landscapes, I discovered a country far richer and more complex than the stories often told about it.",
+  },
+  {
+    name: "Mr. Jalal Mosavi",
+    role: "Founder & Guide, Kabul, Afghanistan",
+    img: "/images/profile1.jpeg",
+    bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.",
   },
 ];
 
