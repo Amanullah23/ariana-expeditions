@@ -1,4 +1,7 @@
+"use client";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { getNotifications } from "./notifications/actions";
 
 const stats = [
   {
@@ -132,13 +135,22 @@ const recentActivity = [
   },
 ];
 
-const upcoming = [
-  { label: "Follow up: Sarah M. inquiry", date: "Today" },
-  { label: "Wakhan trip departure prep", date: "Aug 15" },
-  { label: "Domain renewal reminder", date: "Sept 12" },
-];
-
 export default function AdminDashboard() {
+  const [recentNotifications, setRecentNotifications] = useState([]);
+
+  useEffect(() => {
+    async function loadNotifications() {
+      try {
+        const data = await getNotifications();
+        setRecentNotifications(data.slice(0, 3));
+      } catch (err) {
+        console.error("Failed to load notifications:", err.message);
+      }
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadNotifications();
+  }, []);
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -227,20 +239,41 @@ export default function AdminDashboard() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm p-6">
-          <h2 className="font-heading text-lg text-dark mb-4">Upcoming</h2>
-          <ul className="divide-y divide-dark/5">
-            {upcoming.map((u, i) => (
-              <li
-                key={i}
-                className="py-3 flex items-center justify-between gap-3"
-              >
-                <p className="text-sm text-dark">{u.label}</p>
-                <span className="bg-gold/20 text-dark text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
-                  {u.date}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <h2 className="font-heading text-lg text-dark mb-4">
+            Recent Notifications
+          </h2>
+          {recentNotifications.length > 0 ? (
+            <ul className="divide-y divide-dark/5">
+              {recentNotifications.map((n) => (
+                <li
+                  key={n.id}
+                  className="py-3 flex items-center justify-between gap-3"
+                >
+                  <div>
+                    <p className="text-sm text-dark font-medium">{n.title}</p>
+                    <p className="text-charcoal/60 text-xs">{n.detail}</p>
+                  </div>
+                  {!n.read && (
+                    <span className="bg-gold/20 text-dark text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap">
+                      New
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-charcoal text-sm py-3">
+              No recent notifications.
+            </p>
+          )}
+          <div className="pt-3">
+            <Link
+              href="/admin/notifications"
+              className="text-gold text-sm font-medium hover:underline"
+            >
+              View all →
+            </Link>
+          </div>
 
           <h2 className="font-heading text-lg text-dark mb-4 mt-8">
             Quick Actions

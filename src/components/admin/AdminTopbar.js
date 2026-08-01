@@ -3,6 +3,7 @@ import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import NotificationBadge from "./NotificationBadge";
+import { useEffect, useState } from "react";
 import {
   FaBell,
   FaUser,
@@ -18,6 +19,21 @@ export default function AdminTopbar({ onMenuClick, notificationBadge }) {
     year: "numeric",
   });
   const router = useRouter();
+  const [displayName, setDisplayName] = useState("Admin");
+
+  useEffect(() => {
+    async function loadUser() {
+      const supabase = createClient();
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (user?.user_metadata?.display_name) {
+        setDisplayName(user.user_metadata.display_name);
+      }
+    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
+    loadUser();
+  }, []);
 
   async function handleLogout() {
     const supabase = createClient();
@@ -76,8 +92,8 @@ export default function AdminTopbar({ onMenuClick, notificationBadge }) {
             <span className="w-9 h-9 rounded-full bg-gold flex items-center justify-center shrink-0">
               <FaUser className="w-4.5 h-4.5 text-dark" />
             </span>
-            <span className="hidden md:inline text-dark text-sm font-medium">
-              Admin
+            <span className="hidden md:inline text-navy text-sm font-medium">
+              {displayName}
             </span>
           </Link>
 
