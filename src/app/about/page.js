@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
+import AfghanistanMap from "@/components/AfghanistanMap";
 
 const founders = [
   {
@@ -287,6 +288,86 @@ export default function About() {
                 </div>
               </Reveal>
             ))}
+          </div>
+        </div>
+      </section>
+      {/* Interactive map */}
+      <section className="max-w-5xl mx-auto px-6 py-20">
+        <Reveal>
+          <div className="text-center mb-10">
+            <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+              Where We Go
+            </span>
+            <h2 className="font-heading text-3xl md:text-4xl mt-2 text-dark">
+              Explore Afghanistan on the Map
+            </h2>
+            <p className="text-charcoal max-w-xl mx-auto mt-3">
+              Hover over a destination to learn more, or click through to
+              explore it in detail.
+            </p>
+          </div>
+          <AfghanistanMap />
+        </Reveal>
+      </section>
+      {/* Licensing */}
+      <section className="bg-white py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+          <Reveal>
+            <div className="text-center mb-12">
+              <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+                Fully Licensed
+              </span>
+              <h2 className="font-heading text-3xl md:text-4xl mt-2 text-dark">
+                Registered & Regulated
+              </h2>
+              <p className="text-charcoal max-w-xl mx-auto mt-3">
+                Ariana Expeditions operates as a fully licensed tour operator in
+                both Afghanistan and Germany, giving travelers confidence and
+                legal recourse on both ends of their journey.
+              </p>
+            </div>
+          </Reveal>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <Reveal delay={100}>
+              <div className="bg-cream rounded-lg p-6 text-center h-full flex flex-col items-center">
+                <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-white border border-dark/10">
+                  <Image
+                    src="/images/license-afghanistan.jpeg"
+                    alt="Afghanistan Tour Operator License"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain p-4"
+                  />
+                </div>
+                <h3 className="font-heading text-lg text-dark mb-1">
+                  Licensed in Afghanistan
+                </h3>
+                <p className="text-charcoal text-sm">
+                  Registered tour and travel operator, Kabul, Afghanistan.
+                </p>
+              </div>
+            </Reveal>
+
+            <Reveal delay={200}>
+              <div className="bg-cream rounded-lg p-6 text-center h-full flex flex-col items-center">
+                <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-white border border-dark/10">
+                  <Image
+                    src="/images/license-germany.jpeg"
+                    alt="Germany Business Registration"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-contain p-4"
+                  />
+                </div>
+                <h3 className="font-heading text-lg text-dark mb-1">
+                  Registered in Germany
+                </h3>
+                <p className="text-charcoal text-sm">
+                  Registered business entity, Berlin, Germany.
+                </p>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
