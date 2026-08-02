@@ -211,7 +211,7 @@ export default function AdminSidebar({
                       isOpen ? "max-h-40" : "max-h-0"
                     }`}
                   >
-                    <div className="pl-11 pr-2 py-1 space-y-1">
+                    <div className="ml-5 pl-4 pr-2 py-1 space-y-1 border-l border-white/20">
                       {item.links.map((l) => {
                         const active = pathname === l.href;
                         return (
