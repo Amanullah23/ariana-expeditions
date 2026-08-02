@@ -276,6 +276,14 @@ export default function Footer() {
             >
               Privacy Policy
             </Link>
+            <button
+              onClick={() =>
+                window.dispatchEvent(new Event("open-cookie-settings"))
+              }
+              className="hover:text-gold transition-colors duration-200"
+            >
+              Cookie Settings
+            </button>
             <span>Licensed Tour Operator — Afghanistan</span>
           </div>
         </div>

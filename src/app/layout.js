@@ -2,7 +2,7 @@ import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import BackToTop from "@/components/BackToTop";
 //import WhatsAppButton from "@/components/WhatsAppButton";
-import GoogleAnalytics from "@/components/GoogleAnalytics";
+import CookieConsent from "@/components/CookieConsent";
 import StructuredData from "@/components/StructuredData";
 
 const playfair = Playfair_Display({
@@ -52,7 +52,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${playfair.variable} ${inter.variable}`}>
-        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} />
         <StructuredData />
         {children}
         <BackToTop />
