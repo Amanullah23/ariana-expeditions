@@ -2,6 +2,7 @@
 import { useState } from "react";
 import AdminSidebar from "./AdminSidebar";
 import AdminTopbar from "./AdminTopbar";
+import IdleTimeout from "./IdleTimeout";
 
 export default function AdminShell({ children, notificationBadge }) {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -9,6 +10,7 @@ export default function AdminShell({ children, notificationBadge }) {
 
   return (
     <div className="min-h-screen bg-cream">
+      <IdleTimeout />
       <AdminSidebar
         mobileOpen={mobileOpen}
         onMobileClose={() => setMobileOpen(false)}

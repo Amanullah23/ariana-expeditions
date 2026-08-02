@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 export default function AdminLogin() {
   const router = useRouter();
@@ -221,6 +222,14 @@ export default function AdminLogin() {
                       )}
                     </button>
                   </div>
+                </div>
+                <div className="text-right">
+                  <Link
+                    href="/admin/forgot-password"
+                    className="text-xs text-gold hover:underline"
+                  >
+                    Forgot password?
+                  </Link>
                 </div>
 
                 <button

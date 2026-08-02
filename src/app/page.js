@@ -39,7 +39,7 @@ export default async function Home() {
           }}
         />
 
-        <div className="relative z-10 max-w-5xl mt-16  pt-24 md:pt-16">
+        <div className="relative z-10 max-w-5xl mt-16  pt-24 mb-10 md:pt-16">
           <div
             className="fade-up-in flex items-center justify-center gap-4 mb-6"
             style={{ animationDelay: "0.1s" }}
@@ -95,7 +95,7 @@ export default async function Home() {
         </div>
 
         <div className="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
-          <span className="text-white/50 text-xs tracking-widest uppercase">
+          <span className="text-white/50  text-xs tracking-widest uppercase">
             Scroll
           </span>
           <svg
