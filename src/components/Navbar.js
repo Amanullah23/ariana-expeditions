@@ -149,15 +149,6 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-
-      {/* Backdrop — only covers the area below the dropdown, tap to close */}
-      {open && (
-        <div
-          onClick={() => setOpen(false)}
-          className="lg:hidden fixed inset-x-0 bottom-0 top-auto bg-black/10"
-          style={{ top: "auto", height: "100vh" }}
-        />
-      )}
     </nav>
   );
 }
