@@ -1,9 +1,9 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import { getPublicTrips } from "@/lib/data/trips";
+import TripsSearch from "./TripsSearch";
 
 export const metadata = {
   title: "Afghanistan Tours & Group Itineraries",
@@ -35,68 +35,7 @@ export default async function Trips() {
         </Reveal>
       </section>
 
-      <section className="max-w-6xl mx-auto px-6 py-20 grid grid-cols-1 sm:grid-cols-2 gap-8">
-        {trips.map((t, i) => (
-          <Reveal key={t.id} delay={i * 100}>
-            <Link
-              href={`/trips/${t.slug}`}
-              className="group flex flex-col h-full rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300 bg-white"
-            >
-              <div className="relative h-56 shrink-0">
-                <Image
-                  src={t.img || "/images/hero1.jpg"}
-                  alt={t.title}
-                  fill
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                />
-                <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                  {t.days}
-                </div>
-              </div>
-
-              <div className="p-6 flex flex-col flex-1">
-                <div className="flex items-center gap-3 text-xs text-charcoal mb-3 tracking-wide">
-                  <span>{t.region}</span>
-                  {t.difficulty && (
-                    <>
-                      <span className="w-1 h-1 rounded-full bg-charcoal/50" />
-                      <span>{t.difficulty}</span>
-                    </>
-                  )}
-                </div>
-
-                <h3 className="font-heading text-xl mb-2">{t.title}</h3>
-                <p className="text-charcoal text-sm mb-4">{t.description}</p>
-
-                {t.highlights?.length > 0 && (
-                  <ul className="space-y-1.5 mb-5">
-                    {t.highlights.map((h) => (
-                      <li
-                        key={h}
-                        className="flex items-start gap-2 text-sm text-charcoal"
-                      >
-                        <span className="text-gold mt-0.5">✓</span>
-                        {h}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-
-                <span className="inline-block mt-auto text-gold text-sm font-medium group-hover:underline">
-                  View Itinerary →
-                </span>
-              </div>
-            </Link>
-          </Reveal>
-        ))}
-      </section>
-
-      {trips.length === 0 && (
-        <p className="text-charcoal text-center pb-20">
-          No trips available yet — check back soon.
-        </p>
-      )}
+      <TripsSearch trips={trips} />
 
       <section className="bg-white py-16 px-6 text-center border-t border-dark/10">
         <Reveal>
