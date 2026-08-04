@@ -5,6 +5,7 @@ import BackToTop from "@/components/BackToTop";
 import CookieConsent from "@/components/CookieConsent";
 import StructuredData from "@/components/StructuredData";
 import TopLoader from "@/components/TopLoader";
+import { Suspense } from "react";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -53,7 +54,9 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${playfair.variable} ${inter.variable}`}>
-        <TopLoader />
+        <Suspense fallback={null}>
+          <TopLoader />
+        </Suspense>
         <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} />
         <StructuredData />
         {children}
