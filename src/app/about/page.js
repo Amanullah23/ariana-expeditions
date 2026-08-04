@@ -9,14 +9,14 @@ const founders = [
   {
     name: "Mr. Rik Alexander",
     role: "Founder, Berlin, Germany",
-    img: "/images/profile2.jpeg",
-    bio: "My connection with Afghanistan began long before I first set foot there. Drawn by its history, cultures, and landscapes, I discovered a country far richer and more complex than the stories often told about it.",
+    img: "/images/rik1.jpg",
+    bio: "My connection with Afghanistan began long before I first set foot there. Drawn by its history, cultures, and landscapes, I discovered a country far richer and more complex than the stories often told about it.Travel, for me, is not about collecting destinations. It is about meeting people, hearing their stories, and gaining new perspectives on the world and on ourselves. Afghanistan has been one of my greatest teachers in this regard.Together with Jalal, I founded this company to create meaningful journeys that bring travelers closer to the people and places that make Afghanistan unique.",
   },
   {
-    name: "Mr. Jalal Mosavi",
+    name: "Mr. Jalal Mosawi",
     role: "Co-Founder & Guide, Kabul, Afghanistan",
-    img: "/images/profile1.jpeg",
-    bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.",
+    img: "/images/profile1.jpg",
+    bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.From the ancient Silk Road cities of Herat and Balkh to the turquoise lakes of Bamyan and the remote valleys of the Hindu Kush, I share the places that have shaped Afghanistan for centuries. Every journey is an opportunity to build connections, challenge perceptions, and create lasting memories. My goal is simple: to welcome guests as travelers and see them leave as friends, carrying with them a deeper understanding of Afghanistan and its people.",
   },
 ];
 
@@ -178,12 +178,14 @@ export default function About() {
       <section className="max-w-4xl mx-auto px-6 py-16 text-center">
         <Reveal>
           <p className="text-charcoal leading-relaxed">
+            Afghanistan is more than a destination. It is a crossroads of
+            civilizations, a land of ancient Silk Road cities, breathtaking
+            mountain landscapes, and traditions that have endured for centuries.
             Founded through a partnership between Afghan local expertise and an
             international perspective, we create journeys that go beyond the
             ordinary. Our carefully designed tours combine history, culture, and
             authentic encounters, offering travelers a deeper understanding of
-            one of the world&apos;s most fascinating and misunderstood
-            countries.
+            one of the world's most fascinating and misunderstood countries.
           </p>
         </Reveal>
       </section>

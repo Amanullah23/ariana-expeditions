@@ -1,6 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
+import ConfirmDialog from "./ConfirmDialog";
+import useConfirm from "@/hooks/useConfirm";
 
 export default function MfaEnrollment() {
   const [factors, setFactors] = useState([]);
@@ -13,6 +15,7 @@ export default function MfaEnrollment() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const { confirm, dialogProps } = useConfirm();
 
   const supabase = createClient();
 
@@ -88,14 +91,15 @@ export default function MfaEnrollment() {
   }
 
   async function removeFactor(id, name) {
-    if (
-      !confirm(
-        `Remove "${name}" as a login device? That device will no longer be able to sign in.`,
-      )
-    )
-      return;
-    await supabase.auth.mfa.unenroll({ factorId: id });
-    loadFactors();
+    const ok = await confirm({
+      title: "Remove this device?",
+      message: `"${name}" will no longer be able to sign in with this account. This cannot be undone.`,
+      confirmLabel: "Remove Device",
+    });
+    if (ok) {
+      await supabase.auth.mfa.unenroll({ factorId: id });
+      loadFactors();
+    }
   }
 
   const verifiedFactors = factors.filter((f) => f.status === "verified");
@@ -243,6 +247,7 @@ export default function MfaEnrollment() {
           </button>
         </div>
       )}
+      <ConfirmDialog {...dialogProps} />
     </div>
   );
 }

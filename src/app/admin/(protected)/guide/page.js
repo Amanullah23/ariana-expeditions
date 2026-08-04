@@ -1,204 +1,68 @@
 const sections = [
   {
-    title: "1. Logging In",
-    items: [
-      {
-        h: "Where to log in",
-        p: "Go to arianaexpeditions.com/admin/login (or arianaexpeditions.com/admin/login once the real domain is connected). This page is private — it does not appear anywhere in the site's normal menus.",
-      },
-      {
-        h: "Your login details",
-        p: 'Use the email and password given to you separately. If you ever forget your password, see Section 7 (Changing Your Password) — for now, password resets are handled by contacting your developer directly, not through an automatic "Forgot Password" link.',
-      },
-      {
-        h: "Two-Factor Authentication (2FA)",
-        p: "After entering your email and password correctly, you'll be asked for a 6-digit code from an authenticator app on your phone. This is a required second step that keeps your account secure even if someone else ever learned your password.",
-      },
-    ],
+    title: "Dashboard",
+    desc: "Your home screen when you log in. Shows quick stats (trips, destinations, testimonials, FAQ items, new inquiries), Recent Activity, your latest Notifications, and Quick Action shortcuts.",
   },
   {
-    title: "2. Setting Up Two-Factor Authentication (First Time Only)",
-    items: [
-      {
-        h: "Step 1 — Download an authenticator app",
-        p: "On your phone, install one of these free apps from your app store (Google Play or Apple App Store): Google Authenticator, Microsoft Authenticator, or Authy. Any one of these works — Google Authenticator is the simplest choice if you're not sure.",
-      },
-      {
-        h: "Step 2 — Turn on 2FA in the dashboard",
-        p: 'Log in, go to Settings (left sidebar), scroll to "Two-Factor Authentication," and click "Set Up Two-Factor Authentication." A QR code (a small square barcode) will appear on screen.',
-      },
-      {
-        h: "Step 3 — Scan the QR code",
-        p: 'Open the authenticator app on your phone, tap the + or "Add Account" button, choose "Scan QR Code," and point your phone\'s camera at the QR code on your screen. The app will add an entry called "Ariana Admin 2FA" showing a 6-digit number that changes every 30 seconds.',
-      },
-      {
-        h: "Step 4 — Confirm it",
-        p: "Type the current 6-digit number shown in the app into the box on the dashboard and click Verify. You'll see a confirmation that 2FA is now active.",
-      },
-      {
-        h: "Every time you log in from now on",
-        p: "After your password, open the authenticator app on your phone, find the current 6-digit code, and type it into the dashboard. Each code is only valid for about 30 seconds, so type it in promptly.",
-      },
-      {
-        h: "If you lose your phone",
-        p: "Contact your developer immediately (see the bottom of this page) — 2FA will need to be reset from the Supabase database directly, since there's no self-service recovery option set up.",
-      },
-    ],
+    title: "Trips",
+    desc: 'Manage every itinerary shown on the public Trips page. Click "Add New Trip" to create one, or the pencil icon to edit. Each trip has basic info (title, duration, region, difficulty), a highlights list, includes/excludes, and a day-by-day itinerary you can add or remove days from freely. Cover photos upload directly from your computer.',
   },
   {
-    title: "3. Dashboard Home",
-    items: [
-      {
-        h: "What you see when you log in",
-        p: "The main dashboard shows quick numbers (how many trips, destinations, testimonials, and FAQ items exist, plus new inquiries), a Recent Activity list, an Upcoming reminders list, and Quick Action buttons to jump straight to adding a new trip or testimonial.",
-      },
-    ],
+    title: "Destinations",
+    desc: "Manage the three themed destination groups (Echoes of Ariana, Valleys of Time, Mountains & Nomads). Each theme has its own intro text and a list of specific places — add or remove places as needed. Note: the gallery field currently accepts a pasted image link rather than a direct upload.",
   },
   {
-    title: "4. Managing Trips",
-    items: [
-      {
-        h: "Where to go",
-        p: 'Click "Trips" in the left sidebar to see every trip currently on the website.',
-      },
-      {
-        h: "Adding a new trip",
-        p: 'Click "Add New Trip." Fill in the title, duration (e.g. "10 Days"), region, difficulty level, and a short description. Upload a cover photo from your computer using the photo picker — it uploads automatically, no extra steps needed.',
-      },
-      {
-        h: "Highlights, Includes, Excludes",
-        p: 'These are simple bullet-point lists. Click "+ Add item" to add another line, or the ✕ next to a line to remove it.',
-      },
-      {
-        h: "Day-by-Day Itinerary",
-        p: 'Click "+ Add day" to add a new day to the itinerary. Each day has a label (e.g. "Day 1–2"), a title (e.g. "Arrival in Kabul"), and a description. Add as many days as the trip needs, in any order — you control the order they appear in.',
-      },
-      {
-        h: "Saving",
-        p: 'Click "Create Trip" (or "Save Changes" when editing). The trip appears on the live website immediately — no waiting, no separate publish step.',
-      },
-      {
-        h: "Editing or deleting a trip",
-        p: "From the Trips list, click the pencil icon to edit, or the trash icon to delete. Deleting asks you to confirm first, since it cannot be undone.",
-      },
-    ],
+    title: "Testimonials",
+    desc: "Add, edit, or remove traveler quotes shown on the homepage. Each one needs a name, location, and quote — a photo is optional.",
   },
   {
-    title: "5. Managing Destinations",
-    items: [
-      {
-        h: "What this section is for",
-        p: 'Destinations are the themed groups shown on the public Destinations page (for example "Echoes of Ariana" or "Valleys of Time"), each containing several specific places.',
-      },
-      {
-        h: "Adding a theme",
-        p: 'Click "Add New Theme," fill in the title, a short tag line, and an intro paragraph, then upload a cover photo the same way as with Trips.',
-      },
-      {
-        h: "Adding places within a theme",
-        p: 'Under "Places," click "+ Add place" for each specific location (e.g. Herat, Bamyan). Give each one a name and a short description.',
-      },
-      {
-        h: "Gallery images",
-        p: "This field currently accepts a typed image address (URL) rather than a direct photo upload — this is a known limitation your developer is aware of and can upgrade later. For now, leave this blank unless you have a direct image link to paste in, or ask your developer to add photos here for you.",
-      },
-    ],
+    title: "FAQ",
+    desc: "Manage the questions shown on the public FAQ page, grouped by category (Safety & Ethics, Visa & Entry, Women Travelers, Logistics & Practicalities, Cultural & Legal Considerations, Health & Preparation). Pick a category when adding a question so it appears in the right section.",
   },
   {
-    title: "6. Managing Testimonials",
-    items: [
-      {
-        h: "Adding a traveler quote",
-        p: 'Click "Add Testimonial," enter the traveler\'s name, their location (e.g. "Munich, Germany"), and their quote. A photo is optional. These appear in the "What Our Travelers Say" section on the homepage.',
-      },
-    ],
+    title: "Blog",
+    desc: 'Write and publish travel guide articles ("The Ariana Journal") — safety, visas, culture, food, and more. Use the formatting toolbar above the content box to add headings, bold text, and bullet lists. Leave "Published" unchecked to save an article as a private draft you can finish later.',
   },
   {
-    title: "7. Managing FAQ",
-    items: [
-      {
-        h: "Adding a question",
-        p: 'Click "Add Question," choose a category from the dropdown (Safety & Ethics, Visa & Entry, Women Travelers, Logistics & Practicalities, Cultural & Legal Considerations, or Health & Preparation), then type the question and answer.',
-      },
-      {
-        h: "How categories work",
-        p: "Questions are automatically grouped by category on the public FAQ page — you don't need to worry about ordering them, just pick the right category for each one.",
-      },
-    ],
+    title: "Notifications",
+    desc: "Every booking inquiry and newsletter signup from the public site appears here automatically, in real time. Mark items as read, dismiss them, or filter by type. The bell icon in the top bar always shows your current unread count.",
   },
   {
-    title: "8. Settings — Your Profile",
-    items: [
-      {
-        h: "Updating your name or email",
-        p: "Go to Settings → Profile. Update your display name or email address and click Save Profile.",
-      },
-    ],
+    title: "Settings — Profile & Password",
+    desc: "Update your display name and login email (email changes require confirming via a link sent to the new address). Change your password anytime by entering your current one plus a new one, twice.",
   },
   {
-    title: "9. Changing Your Password",
-    items: [
-      {
-        h: "How to change it",
-        p: "Go to Settings → Change Password. Enter your current password, then your new password twice to confirm, and click Update Password. Choose a password that's long and not used anywhere else.",
-      },
-    ],
+    title: "Settings — Two-Factor Authentication",
+    desc: "Each person sharing this login can add their own independent authenticator device — give it a name (e.g. \"Jalal's Phone\"), scan the QR code with an app like Google Authenticator, and confirm with the 6-digit code. Everyone uses the same email and password, but enters their own device's code at login. Remove a device anytime if a phone is lost or replaced.",
   },
   {
-    title: "10. Notifications",
-    items: [
-      {
-        h: "What shows up here",
-        p: 'Every time someone submits the "Contact Us" inquiry form or signs up for the newsletter on the public website, it appears here automatically — in real time, no refreshing needed.',
-      },
-      {
-        h: "Marking as read / dismissing",
-        p: "Click the checkmark to mark a notification as read, or the ✕ to dismiss (permanently remove) it. Use the filter buttons at the top (All / Booking Inquiry / Newsletter) to narrow down what you're looking at.",
-      },
-      {
-        h: "The bell icon",
-        p: "The bell icon at the top of every admin page shows a small red number — this is your current count of unread notifications, so you always know at a glance if something new has come in.",
-      },
-    ],
+    title: "Settings — Notification Preferences",
+    desc: "Two simple toggles let you choose whether you're notified about new booking inquiries and newsletter signups.",
+  },
+];
+
+const security = [
+  {
+    title: "Forgot Password",
+    desc: 'Click "Forgot password?" on the login page, enter your email, and check your inbox for a reset link. Setting a new password takes you straight back to login.',
   },
   {
-    title: "11. Email & Newsletter",
-    items: [
-      {
-        h: "How inquiries reach you",
-        p: "When someone submits the Contact page form, it's emailed to you directly (through the site's form service) and also saved into Notifications (Section 10) so nothing gets lost.",
-      },
-      {
-        h: "Newsletter signups",
-        p: "When someone subscribes via the footer's \"Stay Inspired\" box, the same thing happens — you're notified and it's logged in Notifications.",
-      },
-      {
-        h: "Your business email addresses",
-        p: "info@, jalal@, and rik@arianaexpeditions.com are separate email inboxes set up through Google Workspace once the domain is live — these are for your own outgoing/incoming email, separate from the website's automatic notifications.",
-      },
-    ],
+    title: "Automatic Sign-Out",
+    desc: "For security, you're automatically signed out after 30 minutes of inactivity. A warning appears one minute beforehand with a countdown — click \"Stay Signed In\" to continue working, or you'll be returned to the login page.",
   },
   {
-    title: "12. Social Media & Contact Info",
-    items: [
-      {
-        h: "Where social links appear",
-        p: "Your Instagram, Facebook, YouTube, Threads, TikTok, and WhatsApp links appear as icons in the website's footer, on every page. Updating these requires a small code change, so message your developer with the new link whenever one changes.",
-      },
-      {
-        h: "Phone numbers and office info",
-        p: "The Contact page shows your Kabul and Germany office details, along with general contact information. Like social links, updating these requires your developer's help — they are not editable from inside this dashboard yet.",
-      },
-    ],
+    title: "Adding New Admin Users",
+    desc: "New dashboard accounts cannot be created from inside the dashboard — there is no public sign-up page anywhere on the site. Contact your developer to set up a new authorized account securely.",
   },
 ];
 
 const tips = [
-  "Changes you make here update the live website immediately — always double-check details before saving.",
+  "Changes you make here update the live website immediately — always double check details before saving.",
   "Deleting an item cannot be undone, so use the delete (trash icon) button carefully.",
   "Photos should be clear, well-lit, and landscape-oriented where possible for the best fit on the site.",
-  "If something looks wrong on the public site after an edit, try refreshing the page — changes usually appear instantly, but your browser may occasionally show a cached (older) version.",
-  "Never share your password or 2FA codes with anyone, including in messages or email.",
+  "Visitors can search and filter trips by keyword, region, and difficulty on the public Trips page — accurate region/difficulty fields help this work well.",
+  "If something looks wrong on the public site after an edit, try refreshing the page — changes usually appear instantly, but your browser may occasionally show a cached version.",
+  "Never share your password or 2FA codes with anyone.",
 ];
 
 export default function AdminGuide() {
@@ -207,37 +71,30 @@ export default function AdminGuide() {
       <div className="mb-8">
         <h1 className="font-heading text-3xl text-dark mb-1">User Guide</h1>
         <p className="text-charcoal text-sm">
-          A complete, step-by-step reference for managing your Ariana
-          Expeditions website — from logging in to publishing new content.
+          A quick reference for managing your Ariana Expeditions website.
         </p>
       </div>
 
-      <div className="space-y-6 mb-10">
-        {sections.map((section) => (
-          <div
-            key={section.title}
-            className="bg-white rounded-2xl shadow-sm p-6"
-          >
-            <h2 className="font-heading text-xl text-dark mb-4">
-              {section.title}
-            </h2>
-            <div className="space-y-4">
-              {section.items.map((item) => (
-                <div key={item.h}>
-                  <h3 className="text-dark text-sm font-semibold mb-1">
-                    {item.h}
-                  </h3>
-                  <p className="text-charcoal text-sm leading-relaxed">
-                    {item.p}
-                  </p>
-                </div>
-              ))}
-            </div>
+      <div className="space-y-4 mb-10">
+        {sections.map((s) => (
+          <div key={s.title} className="bg-white rounded-2xl shadow-sm p-6">
+            <h2 className="font-heading text-lg text-dark mb-2">{s.title}</h2>
+            <p className="text-charcoal text-sm leading-relaxed">{s.desc}</p>
           </div>
         ))}
       </div>
 
-      <div className="bg-dark rounded-2xl p-6 mb-8">
+      <h2 className="font-heading text-xl text-dark mb-4">Account Security</h2>
+      <div className="space-y-4 mb-10">
+        {security.map((s) => (
+          <div key={s.title} className="bg-white rounded-2xl shadow-sm p-6">
+            <h3 className="font-heading text-base text-dark mb-2">{s.title}</h3>
+            <p className="text-charcoal text-sm leading-relaxed">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+
+      <div className="bg-dark rounded-2xl p-6">
         <h2 className="font-heading text-lg text-white mb-4">Helpful Tips</h2>
         <ul className="space-y-3">
           {tips.map((tip, i) => (
@@ -252,7 +109,7 @@ export default function AdminGuide() {
         </ul>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm p-6 text-center">
+      <div className="mt-8 bg-white rounded-2xl shadow-sm p-6 text-center">
         <p className="text-charcoal text-sm mb-1">
           Need help with something not covered here?
         </p>
