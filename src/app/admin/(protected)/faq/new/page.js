@@ -1,5 +1,7 @@
 import FaqForm from "../FaqForm";
 
+export const dynamic = "force-dynamic";
+
 export default function NewFaqPage() {
   return (
     <div>

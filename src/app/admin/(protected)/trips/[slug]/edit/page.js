@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getTripBySlug } from "../../actions";
 import TripForm from "../../TripForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditTripPage({ params }) {
   const { slug } = await params;
 

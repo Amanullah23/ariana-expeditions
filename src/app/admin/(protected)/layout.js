@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import AdminShell from "@/components/admin/AdminShell";
 import NotificationBadge from "@/components/admin/NotificationBadge";
 
+export const dynamic = "force-dynamic";
 export const metadata = {
   title: "Admin Dashboard | Ariana Expeditions",
 };

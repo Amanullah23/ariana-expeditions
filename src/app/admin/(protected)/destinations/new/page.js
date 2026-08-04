@@ -1,5 +1,7 @@
 import DestinationForm from "../DestinationForm";
 
+export const dynamic = "force-dynamic";
+
 export default function NewDestinationPage() {
   return (
     <div>

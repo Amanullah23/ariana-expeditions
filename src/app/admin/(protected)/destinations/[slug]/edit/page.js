@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getDestinationBySlug } from "../../actions";
 import DestinationForm from "../../DestinationForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditDestinationPage({ params }) {
   const { slug } = await params;
 

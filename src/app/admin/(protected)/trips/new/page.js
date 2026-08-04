@@ -1,5 +1,7 @@
 import TripForm from "../TripForm";
 
+export const dynamic = "force-dynamic";
+
 export default function NewTripPage() {
   return (
     <div>

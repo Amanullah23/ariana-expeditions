@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getTestimonialById } from "../../actions";
 import TestimonialForm from "../../TestimonialForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditTestimonialPage({ params }) {
   const { id } = await params;
 
