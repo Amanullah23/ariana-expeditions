@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 const links = [
   { href: "/", label: "Home" },
@@ -22,7 +23,7 @@ export default function Navbar() {
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
@@ -46,17 +47,19 @@ export default function Navbar() {
       className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
         scrolled || open
           ? "bg-dark/90 backdrop-blur-md shadow-lg py-3"
-          : "bg-gradient-to-b from-dark/50 via-dark/20 to-transparent backdrop-blur-[2px] py-6"
+          : "bg-linear-to-b from-dark/50 via-dark/20 to-transparent backdrop-blur-[2px] py-6"
       }`}
     >
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6">
         <Link href="/" className="flex items-center group">
-          <span className="font-heading text-xl md:text-2xl font-bold text-white tracking-wide group-hover:text-gold transition-colors duration-300">
-            Ariana{" "}
-            <span className="text-gold group-hover:text-white transition-colors duration-300">
-              Expeditions
-            </span>
-          </span>
+          <Image
+            src="/images/logo-icon.png"
+            alt="Ariana Expeditions"
+            width={1300}
+            height={441}
+            className="h-20 md:h-18 w-auto transition-transform duration-300 group-hover:scale-105"
+            priority
+          />
         </Link>
 
         {/* Desktop nav */}
@@ -93,20 +96,20 @@ export default function Navbar() {
           aria-expanded={open}
         >
           <span className="sr-only">Menu</span>
-          <div className="w-6 flex flex-col gap-[5px]">
+          <div className="w-6 flex flex-col gap-1.25">
             <span
-              className={`block h-[2px] w-full bg-white rounded-full transition-all duration-300 origin-center ${
-                open ? "rotate-45 translate-y-[7px]" : ""
+              className={`block h-0.5 w-full bg-white rounded-full transition-all duration-300 origin-center ${
+                open ? "rotate-45 translate-y-1.75" : ""
               }`}
             />
             <span
-              className={`block h-[2px] w-full bg-white rounded-full transition-opacity duration-200 ${
+              className={`block h-0.5 w-full bg-white rounded-full transition-opacity duration-200 ${
                 open ? "opacity-0" : "opacity-100"
               }`}
             />
             <span
-              className={`block h-[2px] w-full bg-white rounded-full transition-all duration-300 origin-center ${
-                open ? "-rotate-45 -translate-y-[7px]" : ""
+              className={`block h-0.5 w-full bg-white rounded-full transition-all duration-300 origin-center ${
+                open ? "-rotate-45 -translate-y-1.75" : ""
               }`}
             />
           </div>
@@ -116,7 +119,7 @@ export default function Navbar() {
       {/* Mobile dropdown — expands downward from under the navbar */}
       <div
         className={`lg:hidden overflow-hidden transition-all duration-500 ease-in-out ${
-          open ? "max-h-[600px]" : "max-h-0"
+          open ? "max-h-150" : "max-h-0"
         }`}
       >
         <div className="border-t border-white/10 px-6 py-6 flex flex-col gap-1">

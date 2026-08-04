@@ -138,9 +138,13 @@ export default function Footer() {
       {/* Main columns */}
       <div className="max-w-6xl mx-auto px-6 pt-14 pb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         <div>
-          <span className="block font-heading text-xl font-bold text-white tracking-wide mb-4">
-            Ariana <span className="text-gold">Expeditions</span>
-          </span>
+          <Image
+            src="/images/logo-icon.png"
+            alt="Ariana Expeditions"
+            width={1200}
+            height={241}
+            className="h-18 w-auto mb-4"
+          />
           <p className="text-sm leading-relaxed mb-5">
             Afghanistan Beyond the Headlines. Guided tours and tailor-made
             expeditions across ancient Silk Road cities, mountains, and timeless

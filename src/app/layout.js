@@ -4,6 +4,7 @@ import BackToTop from "@/components/BackToTop";
 //import WhatsAppButton from "@/components/WhatsAppButton";
 import CookieConsent from "@/components/CookieConsent";
 import StructuredData from "@/components/StructuredData";
+import TopLoader from "@/components/TopLoader";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -52,6 +53,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
       <body className={`${playfair.variable} ${inter.variable}`}>
+        <TopLoader />
         <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} />
         <StructuredData />
         {children}
