@@ -57,7 +57,7 @@ export default function Navbar() {
             alt="Ariana Expeditions"
             width={1300}
             height={441}
-            className="h-20 md:h-18 w-auto transition-transform duration-300 group-hover:scale-105"
+            className="h-9 md:h-16 w-auto transition-transform duration-300 group-hover:scale-105"
             priority
           />
         </Link>
