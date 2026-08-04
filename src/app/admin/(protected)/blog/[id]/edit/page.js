@@ -2,6 +2,8 @@ import { notFound } from "next/navigation";
 import { getBlogPostById } from "../../actions";
 import BlogForm from "../../BlogForm";
 
+export const dynamic = "force-dynamic";
+
 export default async function EditBlogPostPage({ params }) {
   const { id } = await params;
 
