@@ -7,7 +7,7 @@ import AfghanistanMap from "@/components/AfghanistanMap";
 
 const founders = [
   {
-    name: "Mr. Jalal Mosawi",
+    name: "Mr. Jalal Mosavi",
     role: "Founder & Guide, Kabul, Afghanistan",
     img: "/images/profile1.jpg",
     bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.From the ancient Silk Road cities of Herat and Balkh to the turquoise lakes of Bamyan and the remote valleys of the Hindu Kush, I share the places that have shaped Afghanistan for centuries. Every journey is an opportunity to build connections, challenge perceptions, and create lasting memories. My goal is simple: to welcome guests as travelers and see them leave as friends, carrying with them a deeper understanding of Afghanistan and its people.",
