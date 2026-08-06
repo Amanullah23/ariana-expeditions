@@ -53,11 +53,11 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto flex items-center justify-between px-6">
         <Link href="/" className="flex items-center group">
           <Image
-            src="/images/logo-icon.png"
+            src="/images/logo-3.png"
             alt="Ariana Expeditions"
             width={1300}
             height={441}
-            className="h-9 md:h-16 w-auto transition-transform duration-300 group-hover:scale-105"
+            className="h-10 md:h-16 w-auto transition-transform duration-300 group-hover:scale-105"
             priority
           />
         </Link>

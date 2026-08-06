@@ -139,7 +139,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-6 pt-14 pb-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
         <div>
           <Image
-            src="/images/logo-icon.png"
+            src="/images/logo-3.png"
             alt="Ariana Expeditions"
             width={1200}
             height={241}
