@@ -7,16 +7,16 @@ import AfghanistanMap from "@/components/AfghanistanMap";
 
 const founders = [
   {
-    name: "Mr. Rik Alexander",
-    role: "Founder, Berlin, Germany",
-    img: "/images/rik1.jpg",
-    bio: "My connection with Afghanistan began long before I first set foot there. Drawn by its history, cultures, and landscapes, I discovered a country far richer and more complex than the stories often told about it.Travel, for me, is not about collecting destinations. It is about meeting people, hearing their stories, and gaining new perspectives on the world and on ourselves. Afghanistan has been one of my greatest teachers in this regard.Together with Jalal, I founded this company to create meaningful journeys that bring travelers closer to the people and places that make Afghanistan unique.",
-  },
-  {
     name: "Mr. Jalal Mosawi",
     role: "Co-Founder & Guide, Kabul, Afghanistan",
     img: "/images/profile1.jpg",
     bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.From the ancient Silk Road cities of Herat and Balkh to the turquoise lakes of Bamyan and the remote valleys of the Hindu Kush, I share the places that have shaped Afghanistan for centuries. Every journey is an opportunity to build connections, challenge perceptions, and create lasting memories. My goal is simple: to welcome guests as travelers and see them leave as friends, carrying with them a deeper understanding of Afghanistan and its people.",
+  },
+  {
+    name: "Mr. Rik Alexander",
+    role: "Founder, Berlin, Germany",
+    img: "/images/rik1.jpg",
+    bio: "My connection with Afghanistan began long before I first set foot there. Drawn by its history, cultures, and landscapes, I discovered a country far richer and more complex than the stories often told about it.Travel, for me, is not about collecting destinations. It is about meeting people, hearing their stories, and gaining new perspectives on the world and on ourselves. Afghanistan has been one of my greatest teachers in this regard.Together with Jalal, I founded this company to create meaningful journeys that bring travelers closer to the people and places that make Afghanistan unique.",
   },
 ];
 

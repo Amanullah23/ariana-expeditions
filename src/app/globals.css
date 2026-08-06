@@ -243,3 +243,10 @@ select:focus-visible {
   color: var(--color-gold);
   text-decoration: underline;
 }
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

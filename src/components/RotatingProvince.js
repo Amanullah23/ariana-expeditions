@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 
-const provinces = ["Kabul", "Bameyan", "Herat", "Balkh", "Wakhan", "Nuristan"];
+const provinces = ["Kabul", "Bamyan", "Herat", "Balkh", "Wakhan", "Nuristan"];
 
 export default function RotatingProvince() {
   const [index, setIndex] = useState(0);
