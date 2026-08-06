@@ -141,9 +141,9 @@ export default function Footer() {
           <Image
             src="/images/logo-3.png"
             alt="Ariana Expeditions"
-            width={1200}
-            height={241}
-            className="h-18 w-auto mb-4"
+            width={1300}
+            height={441}
+            className="h-10 md:h-16 w-auto transition-transform duration-300 group-hover:scale-105"
           />
           <p className="text-sm leading-relaxed mb-5">
             Afghanistan Beyond the Headlines. Guided tours and tailor-made
