@@ -6,7 +6,7 @@ export async function getPublicBlogPosts() {
     .from("blog_posts")
     .select("*")
     .eq("published", true)
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
 
   if (error) {
     console.error("Failed to load blog posts:", error.message);

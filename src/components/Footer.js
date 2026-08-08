@@ -46,9 +46,9 @@ const socialLinks = [
 ];
 
 const destinationLinks = [
-  { label: "Echoes of Ariana", href: "/destinations#echoes-of-ariana" },
-  { label: "Valleys of Time", href: "/destinations#valleys-of-time" },
-  { label: "Mountains & Nomads", href: "/destinations#mountains-&-nomads" },
+  { label: "Explore All Sites", href: "/places" },
+  { label: "Trips & Itineraries", href: "/trips" },
+  { label: "Plan Your Trip", href: "/plan-your-trip" },
   { label: "Blog", href: "/blog" },
 ];
 

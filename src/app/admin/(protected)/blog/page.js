@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import useConfirm from "@/hooks/useConfirm";
-import { getBlogPosts, deleteBlogPost } from "./actions";
+import { getBlogPosts, deleteBlogPost, reorderBlogPosts } from "./actions";
 
 export default function AdminBlogList() {
   const [posts, setPosts] = useState([]);
@@ -44,21 +44,46 @@ export default function AdminBlogList() {
     }
   }
 
+  function moveItem(id, direction) {
+    const index = posts.findIndex((p) => p.id === id);
+    if (index === -1) return;
+
+    let newIndex;
+    if (direction === "up") newIndex = index - 1;
+    else if (direction === "down") newIndex = index + 1;
+    else if (direction === "top") newIndex = 0;
+    else if (direction === "bottom") newIndex = posts.length - 1;
+
+    if (newIndex < 0 || newIndex >= posts.length) return;
+
+    const reordered = [...posts];
+    const [moved] = reordered.splice(index, 1);
+    reordered.splice(newIndex, 0, moved);
+
+    setPosts(reordered);
+    reorderBlogPosts(reordered.map((p) => p.id)).catch((err) => {
+      alert("Failed to save new order: " + err.message);
+      loadPosts();
+    });
+  }
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-heading text-3xl text-dark mb-1">Blog</h1>
+          <h1 className="font-heading text-2xl md:text-3xl text-dark mb-1">
+            Blog
+          </h1>
           <p className="text-charcoal text-sm">
             Manage travel guide articles shown on the public site.
           </p>
         </div>
         <Link
           href="/admin/blog/new"
-          className="inline-flex items-center gap-2 bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold rounded-full px-6 py-3"
+          className="inline-flex items-center gap-2 bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold rounded-full px-5 py-2.5 whitespace-nowrap"
         >
           <svg
-            className="w-5 h-5"
+            className="w-5 h-5 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -83,19 +108,19 @@ export default function AdminBlogList() {
           {posts.map((post) => (
             <div
               key={post.id}
-              className="bg-white rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex"
+              className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col sm:flex-row"
             >
-              <div className="relative w-32 shrink-0">
+              <div className="relative w-full h-40 sm:w-32 sm:h-auto shrink-0">
                 <Image
                   src={post.cover_image || "/images/hero1.jpg"}
                   alt={post.title}
                   fill
-                  sizes="128px"
+                  sizes="(max-width: 640px) 100vw, 128px"
                   className="object-cover"
                 />
               </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <div className="flex items-center gap-2 mb-1">
+              <div className="p-5 flex-1 flex flex-col min-w-0">
+                <div className="flex items-center gap-2 mb-1 flex-wrap">
                   {post.category && (
                     <span className="text-gold text-xs font-semibold uppercase tracking-wide">
                       {post.category}
@@ -107,18 +132,52 @@ export default function AdminBlogList() {
                     </span>
                   )}
                 </div>
-                <h3 className="font-heading text-lg text-dark mb-1">
+                <h3 className="font-heading text-lg text-dark mb-1 truncate">
                   {post.title}
                 </h3>
                 <p className="text-charcoal text-xs mb-3 line-clamp-2">
                   {post.excerpt}
                 </p>
 
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="text-charcoal/50 text-xs">
+                <div className="mt-auto flex items-center justify-between flex-wrap gap-2">
+                  <span className="text-charcoal/50 text-xs shrink-0">
                     {new Date(post.created_at).toLocaleDateString()}
                   </span>
-                  <div className="flex items-center gap-2">
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => moveItem(post.id, "top")}
+                      aria-label="Move to top"
+                      title="Move to top"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ⤒
+                    </button>
+                    <button
+                      onClick={() => moveItem(post.id, "up")}
+                      aria-label="Move up"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => moveItem(post.id, "down")}
+                      aria-label="Move down"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      onClick={() => moveItem(post.id, "bottom")}
+                      aria-label="Move to bottom"
+                      title="Move to bottom"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ⤓
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
                     <Link
                       href={`/admin/blog/${post.id}/edit`}
                       className="w-8 h-8 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark"

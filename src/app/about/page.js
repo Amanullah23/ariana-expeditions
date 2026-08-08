@@ -4,21 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import AfghanistanMap from "@/components/AfghanistanMap";
-
-const founders = [
-  {
-    name: "Mr. Jalal Mosavi",
-    role: "Founder & Guide, Kabul, Afghanistan",
-    img: "/images/profile1.jpg",
-    bio: "Born and raised in Afghanistan, I have spent years guiding travelers through the country's diverse landscapes, historic cities, and living traditions. My passion is to help visitors experience Afghanistan beyond the headlines, through its people, culture, and remarkable history.From the ancient Silk Road cities of Herat and Balkh to the turquoise lakes of Bamyan and the remote valleys of the Hindu Kush, I share the places that have shaped Afghanistan for centuries. Every journey is an opportunity to build connections, challenge perceptions, and create lasting memories. My goal is simple: to welcome guests as travelers and see them leave as friends, carrying with them a deeper understanding of Afghanistan and its people.",
-  },
-  {
-    name: "Mr. Rik Alexander",
-    role: "Co-Founder, Berlin, Germany",
-    img: "/images/rik1.jpg",
-    bio: "My connection with Afghanistan began long before I first set foot there. Drawn by its history, cultures, and landscapes, I discovered a country far richer and more complex than the stories often told about it.Travel, for me, is not about collecting destinations. It is about meeting people, hearing their stories, and gaining new perspectives on the world and on ourselves. Afghanistan has been one of my greatest teachers in this regard.Together with Jalal, I founded this company to create meaningful journeys that bring travelers closer to the people and places that make Afghanistan unique.",
-  },
-];
+import {
+  getAboutIntro,
+  getPublicFounders,
+  getPublicLicenses,
+} from "@/lib/data/about";
 
 const stats = [
   { value: "4+", label: "Years of Experience" },
@@ -134,8 +124,15 @@ export const metadata = {
   description:
     "Meet the founders behind Ariana Expeditions — a trusted Afghanistan travel specialist combining local expertise with international standards.",
 };
+export const revalidate = 0;
 
-export default function About() {
+export default async function About() {
+  const [intro, founders, licenses] = await Promise.all([
+    getAboutIntro(),
+    getPublicFounders(),
+    getPublicLicenses(),
+  ]);
+
   return (
     <>
       <Navbar />
@@ -175,44 +172,53 @@ export default function About() {
       </section>
 
       {/* Intro */}
-      <section className="max-w-4xl mx-auto px-6 py-16 text-center">
-        <Reveal>
-          <p className="text-charcoal leading-relaxed">
-            Afghanistan is more than a destination. It is a crossroads of
-            civilizations, a land of ancient Silk Road cities, breathtaking
-            mountain landscapes, and traditions that have endured for centuries.
-            Founded through a partnership between Afghan local expertise and an
-            international perspective, we create journeys that go beyond the
-            ordinary. Our carefully designed tours combine history, culture, and
-            authentic encounters, offering travelers a deeper understanding of
-            one of the world's most fascinating and misunderstood countries.
-          </p>
-        </Reveal>
-      </section>
+      {/* Intro */}
+      {intro?.description && (
+        <section className="max-w-4xl mx-auto px-6 py-16 text-center">
+          <Reveal>
+            <p className="text-charcoal leading-relaxed">{intro.description}</p>
+          </Reveal>
+        </section>
+      )}
 
       {/* Founders */}
-      <section className="max-w-5xl mx-auto px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-10">
-        {founders.map((f, i) => (
-          <Reveal key={f.name} delay={i * 150}>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
-              <div className="relative h-64">
-                <Image
-                  src={f.img}
-                  alt={f.name}
-                  fill
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  className="object-cover"
-                />
+      {/* Founders */}
+      {founders.length > 0 && (
+        <section className="max-w-5xl mx-auto px-6 pb-20 grid grid-cols-1 md:grid-cols-2 gap-10">
+          {founders.map((f, i) => (
+            <Reveal key={f.id} delay={i * 150}>
+              <div className="bg-white rounded-lg shadow-md overflow-hidden h-full">
+                <div className="relative h-64">
+                  <Image
+                    src={f.image || "/images/hero1.jpg"}
+                    alt={f.full_name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover"
+                  />
+                </div>
+                <div className="p-6">
+                  <h3 className="font-heading text-xl text-dark">
+                    {f.full_name}
+                  </h3>
+                  {f.position && (
+                    <p className="text-gold text-sm font-medium mb-3">
+                      {f.position}
+                    </p>
+                  )}
+                  {f.bio && (
+                    <div className="text-charcoal text-sm leading-relaxed space-y-3">
+                      {f.bio.split("\n\n").map((para, idx) => (
+                        <p key={idx}>{para}</p>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="p-6">
-                <h3 className="font-heading text-xl text-dark">{f.name}</h3>
-                <p className="text-gold text-sm font-medium mb-3">{f.role}</p>
-                <p className="text-charcoal text-sm leading-relaxed">{f.bio}</p>
-              </div>
-            </div>
-          </Reveal>
-        ))}
-      </section>
+            </Reveal>
+          ))}
+        </section>
+      )}
 
       {/* Philosophy */}
       <section className="bg-dark py-20 px-6 text-center">
@@ -312,67 +318,62 @@ export default function About() {
         </Reveal>
       </section>
       {/* Licensing */}
-      <section className="bg-white py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <Reveal>
-            <div className="text-center mb-12">
-              <span className="text-gold text-xs font-semibold tracking-widest uppercase">
-                Fully Licensed
-              </span>
-              <h2 className="font-heading text-3xl md:text-4xl mt-2 text-dark">
-                Registered & Regulated
-              </h2>
-              <p className="text-charcoal max-w-xl mx-auto mt-3">
-                Ariana Expeditions operates as a fully licensed tour operator in
-                both Afghanistan and Germany, giving travelers confidence and
-                legal recourse on both ends of their journey.
-              </p>
+
+      {/* Licensing */}
+      {licenses.length > 0 && (
+        <section className="bg-white py-20 px-6">
+          <div className="max-w-5xl mx-auto">
+            <Reveal>
+              <div className="text-center mb-12">
+                <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+                  Fully Licensed
+                </span>
+                <h2 className="font-heading text-3xl md:text-4xl mt-2 text-dark">
+                  Registered & Regulated
+                </h2>
+                <p className="text-charcoal max-w-xl mx-auto mt-3">
+                  Ariana Expeditions operates as a fully licensed tour operator
+                  in both Afghanistan and Germany, giving travelers confidence
+                  and legal recourse on both ends of their journey.
+                </p>
+              </div>
+            </Reveal>
+
+            <div
+              className={`grid grid-cols-1 ${licenses.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1 max-w-md mx-auto"} gap-8`}
+            >
+              {licenses.map((lic, i) => (
+                <Reveal key={lic.id} delay={i * 100}>
+                  <div className="bg-cream rounded-lg p-6 text-center h-full flex flex-col items-center">
+                    <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-white border border-dark/10">
+                      <Image
+                        src={lic.image || "/images/hero1.jpg"}
+                        alt={lic.title}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-contain p-4"
+                      />
+                    </div>
+                    <h3 className="font-heading text-lg text-dark mb-1">
+                      {lic.title}
+                    </h3>
+                    {lic.description && (
+                      <p className="text-charcoal text-sm mb-1">
+                        {lic.description}
+                      </p>
+                    )}
+                    {lic.license_number && (
+                      <p className="text-charcoal/60 text-xs mt-1">
+                        License No. {lic.license_number}
+                      </p>
+                    )}
+                  </div>
+                </Reveal>
+              ))}
             </div>
-          </Reveal>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Reveal delay={100}>
-              <div className="bg-cream rounded-lg p-6 text-center h-full flex flex-col items-center">
-                <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-white border border-dark/10">
-                  <Image
-                    src="/images/license-afghanistan.jpeg"
-                    alt="Afghanistan Tour Operator License"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain p-4"
-                  />
-                </div>
-                <h3 className="font-heading text-lg text-dark mb-1">
-                  Licensed in Afghanistan
-                </h3>
-                <p className="text-charcoal text-sm">
-                  Registered tour and travel operator, Kabul, Afghanistan.
-                </p>
-              </div>
-            </Reveal>
-
-            <Reveal delay={200}>
-              <div className="bg-cream rounded-lg p-6 text-center h-full flex flex-col items-center">
-                <div className="relative w-full h-48 mb-4 rounded-lg overflow-hidden bg-white border border-dark/10">
-                  <Image
-                    src="/images/license-germany.jpeg"
-                    alt="Germany Business Registration"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain p-4"
-                  />
-                </div>
-                <h3 className="font-heading text-lg text-dark mb-1">
-                  Registered in Germany
-                </h3>
-                <p className="text-charcoal text-sm">
-                  Registered business entity, Berlin, Germany.
-                </p>
-              </div>
-            </Reveal>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
       {/* Closing CTA */}
       <section className="bg-cream py-16 px-6 text-center">
         <Reveal>

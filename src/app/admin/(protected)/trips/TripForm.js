@@ -275,7 +275,7 @@ export default function TripForm({ initialData }) {
           )}
           <input
             type="file"
-            accept="image/*"
+            accept="image/*,.heic,.heif"
             onChange={handleImageChange}
             className="text-sm text-charcoal file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gold file:text-dark file:font-medium file:text-sm hover:file:bg-dark hover:file:text-white file:transition-colors"
           />

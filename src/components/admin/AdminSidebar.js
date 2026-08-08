@@ -35,8 +35,9 @@ const navData = [
     label: "Content",
     icon: <FaGlobe className="w-5 h-5" />,
     links: [
+      { label: "About", href: "/admin/about" },
+      { label: "Places", href: "/admin/places" },
       { label: "Blog", href: "/admin/blog" },
-      { label: "Destinations", href: "/admin/destinations" },
       { label: "Testimonials", href: "/admin/testimonials" },
       { label: "FAQ", href: "/admin/faq" },
     ],

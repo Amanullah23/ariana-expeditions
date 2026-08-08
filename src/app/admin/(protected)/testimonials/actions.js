@@ -27,13 +27,28 @@ export async function getTestimonialById(id) {
 
 export async function createTestimonial(formData) {
   const supabase = await createClient();
+
+  const slug =
+    formData.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/(^-|-$)/g, "") +
+    "-" +
+    Math.random().toString(36).slice(2, 8);
+
+  const { count } = await supabase
+    .from("testimonials")
+    .select("*", { count: "exact", head: true });
+
   const { data, error } = await supabase
     .from("testimonials")
     .insert({
+      slug,
       name: formData.name,
       location: formData.location,
       quote: formData.quote,
       img: formData.imagePreview,
+      sort_order: count || 0,
     })
     .select()
     .single();
@@ -42,6 +57,7 @@ export async function createTestimonial(formData) {
 
   revalidatePath("/admin/testimonials");
   revalidatePath("/");
+  revalidatePath("/testimonials");
   return data;
 }
 

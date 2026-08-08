@@ -6,16 +6,16 @@ import Reveal from "@/components/Reveal";
 import RotatingProvince from "@/components/RotatingProvince";
 import DestinationMarquee from "@/components/DestinationMarquee";
 import { getPublicTrips } from "@/lib/data/trips";
-import { getPublicDestinations } from "@/lib/data/destinations";
+import { getPublicThemes } from "@/lib/data/places";
 import { getPublicTestimonials } from "@/lib/data/testimonials";
 
 export const revalidate = 0;
 
 export default async function Home() {
-  const [allTrips, destinations, testimonials] = await Promise.all([
+  const [allTrips, themes, testimonials] = await Promise.all([
     getPublicTrips(),
-    getPublicDestinations(),
-    getPublicTestimonials(),
+    getPublicThemes(),
+    getPublicTestimonials(3),
   ]);
 
   const trips = allTrips.slice(0, 4);
@@ -39,7 +39,7 @@ export default async function Home() {
           }}
         />
 
-        <div className="relative z-10 max-w-5xl mt-16  pt-24 mb-10 md:pt-16">
+        <div className="relative z-10 max-w-5xl pt-24 md:pt-26">
           <div
             className="fade-up-in flex items-center justify-center gap-4 mb-6"
             style={{ animationDelay: "0.1s" }}
@@ -95,7 +95,7 @@ export default async function Home() {
         </div>
 
         <div className="scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2">
-          <span className="text-white/50  text-xs tracking-widest uppercase">
+          <span className="text-white/50 text-xs tracking-widest uppercase">
             Scroll
           </span>
           <svg
@@ -133,36 +133,53 @@ export default async function Home() {
       {/* Destinations preview */}
       <section className="max-w-6xl mx-auto px-6 pb-20">
         <Reveal>
-          <h2 className="font-heading text-3xl text-center mb-10">
-            Explore by Theme
-          </h2>
+          <div className="text-center mb-10">
+            <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+              Discover Afghanistan
+            </span>
+            <h2 className="font-heading text-3xl mt-2">Explore by Theme</h2>
+          </div>
         </Reveal>
 
-        {destinations.length > 0 && (
+        {themes.length > 0 && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {destinations.slice(0, 3).map((d, i) => (
-              <Reveal key={d.id} delay={i * 120}>
-                <div className="group overflow-hidden rounded-lg shadow-md">
+            {themes.slice(0, 3).map((t, i) => (
+              <Reveal key={t.id} delay={i * 120}>
+                <Link
+                  href={`/places?theme=${encodeURIComponent(t.title)}`}
+                  className="group block overflow-hidden rounded-lg shadow-md"
+                >
                   <div className="relative h-64 overflow-hidden">
                     <Image
-                      src={d.img || `/images/explore${i + 1}.jpg`}
-                      alt={d.title}
+                      src={t.img || "/images/hero1.jpg"}
+                      alt={t.title}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                   </div>
                   <div className="bg-white p-5 text-center">
-                    <h3 className="font-heading text-xl mb-1">{d.title}</h3>
-                    <p className="text-charcoal text-sm">{d.tag}</p>
+                    <h3 className="font-heading text-xl mb-1">{t.title}</h3>
+                    <p className="text-charcoal text-sm">{t.tag}</p>
                   </div>
-                </div>
+                </Link>
               </Reveal>
             ))}
           </div>
         )}
 
         <Reveal delay={300}>
+          <div className="text-center mb-12">
+            <Link
+              href="/places"
+              className="inline-block border border-dark text-dark hover:bg-dark hover:text-white transition-colors duration-300 font-semibold px-8 py-3 rounded"
+            >
+              Explore All Historical Sites
+            </Link>
+          </div>
+        </Reveal>
+
+        <Reveal delay={350}>
           <DestinationMarquee />
         </Reveal>
       </section>
@@ -194,7 +211,7 @@ export default async function Home() {
                   >
                     <div className="relative h-44 overflow-hidden">
                       <Image
-                        src={t.img || "/images/hero2.jpg"}
+                        src={t.img || "/images/hero1.jpg"}
                         alt={t.title}
                         fill
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -239,6 +256,7 @@ export default async function Home() {
       </section>
 
       {/* Testimonials */}
+      {/* Testimonials */}
       {testimonials.length > 0 && (
         <section className="bg-cream py-20 px-6">
           <div className="max-w-5xl mx-auto">
@@ -253,24 +271,41 @@ export default async function Home() {
               </div>
             </Reveal>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
               {testimonials.map((t, i) => (
                 <Reveal key={t.id} delay={i * 120}>
-                  <div className="bg-white rounded-lg shadow-sm p-6 h-full flex flex-col">
-                    <span className="text-gold text-3xl font-heading mb-2">
+                  <Link
+                    href={`/testimonials/${t.slug}`}
+                    className="group block bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 p-6 h-full flex flex-col"
+                  >
+                    <span className="text-gold text-3xl font-heading mb-2 leading-none">
                       &ldquo;
                     </span>
-                    <p className="text-charcoal text-sm leading-relaxed flex-1 mb-4">
+                    <p className="text-charcoal text-sm leading-relaxed flex-1 mb-4 line-clamp-4">
                       {t.quote}
                     </p>
-                    <div>
+                    <div className="mb-3">
                       <p className="font-heading text-dark text-sm">{t.name}</p>
                       <p className="text-charcoal/60 text-xs">{t.location}</p>
                     </div>
-                  </div>
+                    <span className="text-gold text-xs font-medium group-hover:underline">
+                      Read Full Story →
+                    </span>
+                  </Link>
                 </Reveal>
               ))}
             </div>
+
+            <Reveal delay={300}>
+              <div className="text-center">
+                <Link
+                  href="/testimonials"
+                  className="inline-block border border-dark text-dark hover:bg-dark hover:text-white transition-colors duration-300 font-semibold px-8 py-3 rounded"
+                >
+                  Read All Traveler Stories
+                </Link>
+              </div>
+            </Reveal>
           </div>
         </section>
       )}

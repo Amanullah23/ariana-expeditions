@@ -5,7 +5,7 @@ export async function getPublicTrips() {
   const { data, error } = await supabase
     .from("trips")
     .select("*")
-    .order("created_at", { ascending: true });
+    .order("sort_order", { ascending: true });
 
   if (error) {
     console.error("Failed to load trips:", error.message);

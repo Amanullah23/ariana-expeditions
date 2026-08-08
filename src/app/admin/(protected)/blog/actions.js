@@ -7,7 +7,7 @@ export async function getBlogPosts() {
   const { data, error } = await supabase
     .from("blog_posts")
     .select("*")
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
 
   if (error) throw new Error(error.message);
   return data;
@@ -33,6 +33,11 @@ export async function createBlogPost(formData) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
+  // Place new posts at the end of the current order
+  const { count } = await supabase
+    .from("blog_posts")
+    .select("*", { count: "exact", head: true });
+
   const { data, error } = await supabase
     .from("blog_posts")
     .insert({
@@ -44,6 +49,7 @@ export async function createBlogPost(formData) {
       cover_image: formData.coverImage,
       author: formData.author || "Ariana Expeditions Team",
       published: formData.published,
+      sort_order: count || 0,
     })
     .select()
     .single();
@@ -83,6 +89,19 @@ export async function deleteBlogPost(id) {
   const supabase = await createClient();
   const { error } = await supabase.from("blog_posts").delete().eq("id", id);
   if (error) throw new Error(error.message);
+
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+}
+
+export async function reorderBlogPosts(orderedIds) {
+  const supabase = await createClient();
+  const updates = orderedIds.map((id, index) =>
+    supabase.from("blog_posts").update({ sort_order: index }).eq("id", id),
+  );
+  const results = await Promise.all(updates);
+  const failed = results.find((r) => r.error);
+  if (failed) throw new Error(failed.error.message);
 
   revalidatePath("/admin/blog");
   revalidatePath("/blog");

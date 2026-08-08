@@ -7,7 +7,7 @@ export async function getTrips() {
   const { data, error } = await supabase
     .from("trips")
     .select("*, trip_itinerary_items(*)")
-    .order("created_at", { ascending: false });
+    .order("sort_order", { ascending: true });
 
   if (error) throw new Error(error.message);
   return data;
@@ -130,4 +130,18 @@ export async function deleteTrip(id) {
 
   revalidatePath("/admin/trips");
   revalidatePath("/trips");
+}
+
+export async function reorderTrips(orderedIds) {
+  const supabase = await createClient();
+  const updates = orderedIds.map((id, index) =>
+    supabase.from("trips").update({ sort_order: index }).eq("id", id),
+  );
+  const results = await Promise.all(updates);
+  const failed = results.find((r) => r.error);
+  if (failed) throw new Error(failed.error.message);
+
+  revalidatePath("/admin/trips");
+  revalidatePath("/trips");
+  revalidatePath("/");
 }

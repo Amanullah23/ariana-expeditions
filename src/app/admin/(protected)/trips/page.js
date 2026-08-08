@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import useConfirm from "@/hooks/useConfirm";
-import { getTrips, deleteTrip } from "./actions";
+import { getTrips, deleteTrip, reorderTrips } from "./actions";
 
 export default function AdminTripsList() {
   const [trips, setTrips] = useState([]);
@@ -21,6 +21,7 @@ export default function AdminTripsList() {
     }
     setLoading(false);
   }
+
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
     loadTrips();
@@ -43,21 +44,46 @@ export default function AdminTripsList() {
     }
   }
 
+  function moveItem(id, direction) {
+    const index = trips.findIndex((t) => t.id === id);
+    if (index === -1) return;
+
+    let newIndex;
+    if (direction === "up") newIndex = index - 1;
+    else if (direction === "down") newIndex = index + 1;
+    else if (direction === "top") newIndex = 0;
+    else if (direction === "bottom") newIndex = trips.length - 1;
+
+    if (newIndex < 0 || newIndex >= trips.length) return;
+
+    const reordered = [...trips];
+    const [moved] = reordered.splice(index, 1);
+    reordered.splice(newIndex, 0, moved);
+
+    setTrips(reordered);
+    reorderTrips(reordered.map((t) => t.id)).catch((err) => {
+      alert("Failed to save new order: " + err.message);
+      loadTrips();
+    });
+  }
+
   return (
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <div>
-          <h1 className="font-heading text-3xl text-dark mb-1">Trips</h1>
+          <h1 className="font-heading text-2xl md:text-3xl text-dark mb-1">
+            Trips
+          </h1>
           <p className="text-charcoal text-sm">
             Manage all itineraries shown on the public site.
           </p>
         </div>
         <Link
           href="/admin/trips/new"
-          className="inline-flex items-center gap-2 bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold rounded-full px-6 py-3"
+          className="inline-flex items-center gap-2 bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold rounded-full px-5 py-2.5 whitespace-nowrap"
         >
           <svg
-            className="w-5 h-5"
+            className="w-5 h-5 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -82,35 +108,69 @@ export default function AdminTripsList() {
           {trips.map((t) => (
             <div
               key={t.id}
-              className="bg-white rounded-2xl hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex"
+              className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col sm:flex-row"
             >
-              <div className="relative w-32 shrink-0">
+              <div className="relative w-full h-40 sm:w-32 sm:h-auto shrink-0">
                 <Image
                   src={t.img || "/images/hero1.jpg"}
                   alt={t.title}
                   fill
-                  sizes="128px"
+                  sizes="(max-width: 640px) 100vw, 128px"
                   className="object-cover"
                 />
               </div>
-              <div className="p-5 flex-1 flex flex-col">
+              <div className="p-5 flex-1 flex flex-col min-w-0">
                 <div className="flex items-center gap-2 text-xs text-charcoal/70 mb-1">
-                  <span>{t.region}</span>
-                  <span className="w-1 h-1 rounded-full bg-charcoal/40" />
-                  <span>{t.difficulty}</span>
+                  <span className="truncate">{t.region}</span>
+                  <span className="w-1 h-1 rounded-full bg-charcoal/40 shrink-0" />
+                  <span className="shrink-0">{t.difficulty}</span>
                 </div>
-                <h3 className="font-heading text-lg text-dark mb-1">
+                <h3 className="font-heading text-lg text-dark mb-1 truncate">
                   {t.title}
                 </h3>
                 <p className="text-charcoal text-xs mb-3 line-clamp-2">
                   {t.description}
                 </p>
 
-                <div className="mt-auto flex items-center justify-between">
-                  <span className="bg-gold/20 text-dark text-xs font-semibold px-3 py-1 rounded-full">
+                <div className="mt-auto flex items-center justify-between flex-wrap gap-2">
+                  <span className="bg-gold/20 text-dark text-xs font-semibold px-3 py-1 rounded-full shrink-0">
                     {t.days}
                   </span>
-                  <div className="flex items-center gap-2">
+
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      onClick={() => moveItem(t.id, "top")}
+                      aria-label="Move to top"
+                      title="Move to top"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ⤒
+                    </button>
+                    <button
+                      onClick={() => moveItem(t.id, "up")}
+                      aria-label="Move up"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ↑
+                    </button>
+                    <button
+                      onClick={() => moveItem(t.id, "down")}
+                      aria-label="Move down"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ↓
+                    </button>
+                    <button
+                      onClick={() => moveItem(t.id, "bottom")}
+                      aria-label="Move to bottom"
+                      title="Move to bottom"
+                      className="w-7 h-7 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark text-xs"
+                    >
+                      ⤓
+                    </button>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
                     <Link
                       href={`/admin/trips/${t.slug}/edit`}
                       className="w-8 h-8 rounded-full bg-dark/5 hover:bg-dark/10 flex items-center justify-center text-dark"

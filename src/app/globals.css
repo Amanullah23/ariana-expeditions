@@ -250,3 +250,21 @@ select:focus-visible {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* iOS Safari's address bar makes 100vh unreliable — dvh accounts for the
+   actual visible viewport. min-h-screen/h-screen still work everywhere else
+   as a fallback since we're not removing them, just adding a better value. */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+select {
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232A2320' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1em;
+  padding-right: 2.25rem;
+}
