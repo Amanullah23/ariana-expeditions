@@ -169,10 +169,20 @@ export default async function Home() {
         )}
 
         <Reveal delay={300}>
-          <div className="text-center mb-12">
+          <div className="text-center mb-10">
+            <span className="text-gold text-xs font-semibold tracking-widest uppercase">
+              Discover Afghanistan
+            </span>
+            <h2 className="font-heading text-2xl md:text-3xl text-dark mt-2 mb-3">
+              Places That Await
+            </h2>
+            <p className="text-charcoal max-w-lg mx-auto mb-6">
+              A glimpse of the landscapes, cities, and landmarks woven into
+              every journey.
+            </p>
             <Link
               href="/places"
-              className="inline-block border border-dark text-dark hover:bg-dark hover:text-white transition-colors duration-300 font-semibold px-8 py-3 rounded"
+              className="inline-block bg-gold hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold px-8 py-3 rounded"
             >
               Explore All Historical Sites
             </Link>
