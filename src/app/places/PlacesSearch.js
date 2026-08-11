@@ -156,11 +156,9 @@ export default function PlacesSearch({ places, themes }) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {themes.map((t, i) => (
                 <Reveal key={t.id} delay={i * 100}>
-                  <button
-                    onClick={() => selectTheme(t.title)}
-                    className={`group text-left w-full rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white ${
-                      theme === t.title ? "ring-2 ring-gold" : ""
-                    }`}
+                  <Link
+                    href={`/places/theme/${t.slug}`}
+                    className="group block text-left w-full rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
                   >
                     <div className="relative h-40">
                       <Image
@@ -181,7 +179,7 @@ export default function PlacesSearch({ places, themes }) {
                         {t.title}
                       </h3>
                     </div>
-                  </button>
+                  </Link>
                 </Reveal>
               ))}
             </div>

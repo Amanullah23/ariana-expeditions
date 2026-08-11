@@ -11,6 +11,7 @@ const categoryOptions = [
   "Visa & Practical Info",
   "Best Time to Visit",
   "Destinations",
+  "Living Heritage",
 ];
 
 function FormatToolbar({ textareaRef, onInsert }) {

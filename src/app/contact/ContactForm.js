@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import { createClient } from "@/lib/supabase/client";
+import { trackAction } from "@/components/AnalyticsTracker";
 import {
   FaPhone,
   FaWhatsapp,
@@ -43,7 +44,6 @@ const contactCards = [
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
-
   async function handleSubmit(e) {
     e.preventDefault();
     const form = e.target;
@@ -70,6 +70,7 @@ export default function Contact() {
         });
 
         setSubmitted(true);
+        trackAction("Contact form submitted");
         form.reset();
       } else {
         alert("Something went wrong — please try again or email us directly.");

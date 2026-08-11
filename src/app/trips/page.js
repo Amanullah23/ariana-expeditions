@@ -29,8 +29,8 @@ export default async function Trips() {
             Trips & Itineraries
           </h1>
           <p className="text-white/80 max-w-xl mx-auto">
-            Carefully crafted journeys, or choose a tailor-made adventure of
-            your own — every trip led by guides who call this country home.
+            Carefully crafted journeys, or choose a tailor-made journey of your
+            own — every trip led by guides who call this country home.
           </p>
         </Reveal>
       </section>

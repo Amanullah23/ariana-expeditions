@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { getPublicTripBySlug, getAllTripSlugs } from "@/lib/data/trips";
 import AccordionItem from "./AccordionItem";
 import Gallery from "@/components/Gallery";
+import VideoPlayer from "@/components/VideoPlayer";
+import EnquireButton from "@/components/EnquireButton";
 
 export async function generateStaticParams() {
   const slugs = await getAllTripSlugs();
@@ -71,6 +73,19 @@ export default async function TripDetail({ params }) {
           </p>
         )}
 
+        {(trip.youtube_url || trip.video_url) && (
+          <div className="mb-12">
+            <h2 className="font-heading text-2xl text-dark mb-4">
+              See This Journey
+            </h2>
+            <VideoPlayer
+              youtubeUrl={trip.youtube_url}
+              videoUrl={trip.video_url}
+              title={trip.title}
+            />
+          </div>
+        )}
+
         {itinerary.length > 0 && (
           <>
             <h2 className="font-heading text-2xl mb-4">Day-by-Day Itinerary</h2>
@@ -119,12 +134,12 @@ export default async function TripDetail({ params }) {
         </div>
 
         <div className="text-center">
-          <Link
+          <EnquireButton
             href="/contact"
             className="inline-block bg-gold hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold px-8 py-3 rounded"
           >
             Enquire About This Trip
-          </Link>
+          </EnquireButton>
         </div>
       </section>
 

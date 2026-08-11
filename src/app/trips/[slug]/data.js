@@ -169,7 +169,7 @@ export const tripDetails = {
       "/images/hero4.jpg",
     ],
     overview:
-      "For the adventurous traveler — remote valleys, high Pamir passes, and communities rarely visited by outsiders.",
+      "For the explorers — remote valleys, high Pamir passes, and communities rarely visited by outsiders.",
     itinerary: [
       {
         day: "Day 1–2",

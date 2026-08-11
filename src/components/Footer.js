@@ -3,6 +3,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import { trackAction } from "@/components/AnalyticsTracker";
 import {
   FaWhatsapp,
   FaInstagram,
@@ -82,6 +83,7 @@ export default function Footer() {
         await supabase.from("newsletter_signups").insert({ email });
 
         setStatus("success");
+        trackAction("Newsletter signup");
         setEmail("");
       } else {
         setStatus("error");

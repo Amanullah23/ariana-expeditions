@@ -5,6 +5,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
 import Gallery from "@/components/Gallery";
+import VideoPlayer from "@/components/VideoPlayer";
 import { getPublicPlaceBySlug, getAllPlaceSlugs } from "@/lib/data/places";
 
 export async function generateStaticParams() {
@@ -85,6 +86,19 @@ export default async function PlaceDetail({ params }) {
                   <p key={i}>{para}</p>
                 ))}
               </div>
+            </div>
+          </Reveal>
+        )}
+
+        {(place.youtube_url || place.video_url) && (
+          <Reveal>
+            <div className="mb-12">
+              <h2 className="font-heading text-2xl text-dark mb-4">Watch</h2>
+              <VideoPlayer
+                youtubeUrl={place.youtube_url}
+                videoUrl={place.video_url}
+                title={place.name}
+              />
             </div>
           </Reveal>
         )}

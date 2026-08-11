@@ -6,6 +6,7 @@ import CookieConsent from "@/components/CookieConsent";
 import StructuredData from "@/components/StructuredData";
 import TopLoader from "@/components/TopLoader";
 import { Suspense } from "react";
+import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -58,6 +59,7 @@ export default function RootLayout({ children }) {
           <TopLoader />
         </Suspense>
         <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID} />
+        <AnalyticsTracker />
         <StructuredData />
         {children}
         <BackToTop />

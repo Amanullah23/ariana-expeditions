@@ -57,6 +57,9 @@ export async function createPlace(formData) {
       gallery: formData.gallery.filter(Boolean),
       visitor_experience: formData.visitorExperience,
       status: formData.status,
+      destination_id: formData.destinationId || null,
+      youtube_url: formData.youtubeUrl || null,
+      video_url: formData.videoUrl || null,
     })
     .select()
     .single();
@@ -94,6 +97,9 @@ export async function updatePlace(id, formData) {
       gallery: formData.gallery.filter(Boolean),
       visitor_experience: formData.visitorExperience,
       status: formData.status,
+      destination_id: formData.destinationId || null,
+      youtube_url: formData.youtubeUrl || null,
+      video_url: formData.videoUrl || null,
       updated_at: new Date().toISOString(),
     })
     .eq("id", id);
@@ -137,7 +143,8 @@ export async function getAllTripsForLinking() {
   if (error) return [];
   return data;
 }
-// ---- Theme (formerly "Destinations") management — now lives under Sites ----
+
+// ---- Theme (formerly "Destinations") management — now lives under Places ----
 
 export async function getThemes() {
   const supabase = await createClient();

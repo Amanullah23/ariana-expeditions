@@ -74,7 +74,7 @@ export const mockTrips = [
     days: "14 Days",
     region: "Wakhan Corridor",
     difficulty: "Challenging",
-    desc: "For the adventurous — remote valleys and the high Pamirs.",
+    desc: "For the wanderers — remote valleys and the high Pamirs.",
     img: "/images/hero1.jpg",
     highlights: [
       "High-altitude Pamir passes",

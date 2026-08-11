@@ -26,7 +26,7 @@ const markets = [
   {
     code: "FR",
     country: "France",
-    desc: "Culture, gastronomy, architecture, and history — depth over adventure.",
+    desc: "Culture, gastronomy, architecture, and history — depth over journey.",
   },
   {
     code: "RU",

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createTrip, updateTrip } from "./actions";
 import { uploadImage } from "@/lib/supabase/upload";
+import { uploadVideo } from "@/lib/supabase/uploadVideo";
 
 function RepeatableList({ label, items, setItems, placeholder }) {
   function update(i, value) {
@@ -123,6 +124,13 @@ function ItineraryBuilder({ days, setDays }) {
 export default function TripForm({ initialData }) {
   const router = useRouter();
   const isEdit = Boolean(initialData);
+  const [youtubeUrl, setYoutubeUrl] = useState(initialData?.youtube_url || "");
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(initialData?.video_url || "");
+  const [videoError, setVideoError] = useState("");
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  const MAX_VIDEO_MB = 20;
 
   const [title, setTitle] = useState(initialData?.title || "");
   const [days, setDays] = useState(initialData?.days || "");
@@ -149,6 +157,22 @@ export default function TripForm({ initialData }) {
       setImagePreview(URL.createObjectURL(file));
     }
   }
+  function handleVideoFileChange(e) {
+    const file = e.target.files[0];
+    setVideoError("");
+    if (!file) return;
+
+    const sizeMB = file.size / 1024 / 1024;
+    if (sizeMB > MAX_VIDEO_MB) {
+      setVideoError(
+        `That file is ${sizeMB.toFixed(1)}MB — the maximum allowed is ${MAX_VIDEO_MB}MB. Please compress it and try again.`,
+      );
+      e.target.value = "";
+      return;
+    }
+
+    setVideoFile(file);
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -162,6 +186,19 @@ export default function TripForm({ initialData }) {
         finalImageUrl = await uploadImage(imageFile, "trips");
         setUploading(false);
       }
+      let finalVideoUrl = videoUrl;
+      if (videoFile) {
+        setUploadingVideo(true);
+        try {
+          finalVideoUrl = await uploadVideo(videoFile, "trip-videos");
+        } catch (err) {
+          setUploadingVideo(false);
+          setVideoError(err.message);
+          setSaving(false);
+          return;
+        }
+        setUploadingVideo(false);
+      }
 
       const payload = {
         title,
@@ -174,6 +211,8 @@ export default function TripForm({ initialData }) {
         includes,
         excludes,
         itinerary,
+        youtubeUrl,
+        videoUrl: finalVideoUrl,
       };
 
       if (isEdit) {
@@ -190,6 +229,7 @@ export default function TripForm({ initialData }) {
       alert("Failed to save: " + err.message);
       setSaving(false);
       setUploading(false);
+      setUploadingVideo(false);
     }
   }
 
@@ -314,19 +354,69 @@ export default function TripForm({ initialData }) {
         <ItineraryBuilder days={itinerary} setDays={setItinerary} />
       </div>
 
+      <div className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
+        <h2 className="font-heading text-lg text-dark">Video (Optional)</h2>
+
+        <div>
+          <label className="block text-sm font-medium text-dark mb-1">
+            YouTube Link
+          </label>
+          <input
+            type="url"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="https://youtube.com/watch?v=... or a Shorts link"
+            className="w-full border border-dark/20 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+          />
+          <p className="text-xs text-charcoal/60 mt-1">
+            If filled in, this video takes priority over an uploaded file below.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-dark mb-1">
+            Or Upload a Video File (max {MAX_VIDEO_MB}MB)
+          </label>
+          {videoError && (
+            <p className="text-red-600 text-sm bg-red-50 rounded px-3 py-2 mb-2">
+              {videoError}
+            </p>
+          )}
+          {videoUrl && !videoFile && (
+            <p className="text-xs text-charcoal/60 mb-2">
+              A video is currently uploaded for this trip.
+            </p>
+          )}
+          {videoFile && (
+            <p className="text-xs text-gold mb-2">
+              Ready to upload: {videoFile.name} (
+              {(videoFile.size / 1024 / 1024).toFixed(1)}MB)
+            </p>
+          )}
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleVideoFileChange}
+            className="text-sm text-charcoal file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gold file:text-dark file:font-medium file:text-sm hover:file:bg-dark hover:file:text-white file:transition-colors"
+          />
+        </div>
+      </div>
+
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={saving || uploading}
+          disabled={saving || uploading || uploadingVideo}
           className="bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold px-8 py-3 rounded disabled:opacity-60"
         >
-          {uploading
-            ? "Uploading image..."
-            : saving
-              ? "Saving..."
-              : isEdit
-                ? "Save Changes"
-                : "Create Trip"}
+          {uploadingVideo
+            ? "Uploading video..."
+            : uploading
+              ? "Uploading image..."
+              : saving
+                ? "Saving..."
+                : isEdit
+                  ? "Save Changes"
+                  : "Create Trip"}
         </button>
         <button
           type="button"

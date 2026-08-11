@@ -5,6 +5,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   FaGauge,
+  FaChartLine,
   FaMapLocationDot,
   FaGlobe,
   FaComment,
@@ -18,6 +19,12 @@ const navData = [
     label: "Dashboard",
     href: "/admin",
     icon: <FaGauge className="w-5 h-5" />,
+  },
+  {
+    type: "link",
+    label: "Analytics",
+    href: "/admin/analytics",
+    icon: <FaChartLine className="w-5 h-5" />,
   },
   {
     type: "group",

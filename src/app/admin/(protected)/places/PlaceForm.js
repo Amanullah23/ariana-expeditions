@@ -8,14 +8,11 @@ import {
   getAllThemesForSelect,
 } from "./actions";
 import { uploadImage } from "@/lib/supabase/upload";
+import { uploadVideo } from "@/lib/supabase/uploadVideo";
 
-const categoryOptions = [
-  "Historical Site",
-  "Nature",
-  "Culture",
-  "Adventure",
-  "Heritage",
-];
+const categoryOptions = ["Historical Site", "Nature", "Culture", "Heritage"];
+
+const MAX_VIDEO_MB = 20;
 
 function GalleryUploader({
   images,
@@ -119,6 +116,12 @@ export default function PlaceForm({ initialData }) {
     initialData?.destination_id || "",
   );
 
+  const [youtubeUrl, setYoutubeUrl] = useState(initialData?.youtube_url || "");
+  const [videoFile, setVideoFile] = useState(null);
+  const [videoUrl, setVideoUrl] = useState(initialData?.video_url || "");
+  const [videoError, setVideoError] = useState("");
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
   const [saving, setSaving] = useState(false);
   const [uploadingMain, setUploadingMain] = useState(false);
 
@@ -141,6 +144,23 @@ export default function PlaceForm({ initialData }) {
     }
   }
 
+  function handleVideoFileChange(e) {
+    const file = e.target.files[0];
+    setVideoError("");
+    if (!file) return;
+
+    const sizeMB = file.size / 1024 / 1024;
+    if (sizeMB > MAX_VIDEO_MB) {
+      setVideoError(
+        `That file is ${sizeMB.toFixed(1)}MB — the maximum allowed is ${MAX_VIDEO_MB}MB. Please compress it and try again.`,
+      );
+      e.target.value = "";
+      return;
+    }
+
+    setVideoFile(file);
+  }
+
   function toggleTrip(tripId) {
     setLinkedTripIds((prev) =>
       prev.includes(tripId)
@@ -161,6 +181,20 @@ export default function PlaceForm({ initialData }) {
         setUploadingMain(false);
       }
 
+      let finalVideoUrl = videoUrl;
+      if (videoFile) {
+        setUploadingVideo(true);
+        try {
+          finalVideoUrl = await uploadVideo(videoFile, "place-videos");
+        } catch (err) {
+          setUploadingVideo(false);
+          setVideoError(err.message);
+          setSaving(false);
+          return;
+        }
+        setUploadingVideo(false);
+      }
+
       const payload = {
         name,
         province,
@@ -173,6 +207,8 @@ export default function PlaceForm({ initialData }) {
         gallery,
         linkedTripIds,
         destinationId: destinationId || null,
+        youtubeUrl,
+        videoUrl: finalVideoUrl,
       };
 
       if (isEdit) {
@@ -189,6 +225,7 @@ export default function PlaceForm({ initialData }) {
       alert("Failed to save: " + err.message);
       setSaving(false);
       setUploadingMain(false);
+      setUploadingVideo(false);
     }
   }
 
@@ -347,6 +384,54 @@ export default function PlaceForm({ initialData }) {
         />
       </div>
 
+      <div className="bg-white rounded-2xl shadow-sm p-6 space-y-5">
+        <h2 className="font-heading text-lg text-dark">Video (Optional)</h2>
+
+        <div>
+          <label className="block text-sm font-medium text-dark mb-1">
+            YouTube Link
+          </label>
+          <input
+            type="url"
+            value={youtubeUrl}
+            onChange={(e) => setYoutubeUrl(e.target.value)}
+            placeholder="https://youtube.com/watch?v=... or a Shorts link"
+            className="w-full border border-dark/20 rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-gold"
+          />
+          <p className="text-xs text-charcoal/60 mt-1">
+            If filled in, this video takes priority over an uploaded file below.
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-dark mb-1">
+            Or Upload a Video File (max {MAX_VIDEO_MB}MB)
+          </label>
+          {videoError && (
+            <p className="text-red-600 text-sm bg-red-50 rounded px-3 py-2 mb-2">
+              {videoError}
+            </p>
+          )}
+          {videoUrl && !videoFile && (
+            <p className="text-xs text-charcoal/60 mb-2">
+              A video is currently uploaded for this place.
+            </p>
+          )}
+          {videoFile && (
+            <p className="text-xs text-gold mb-2">
+              Ready to upload: {videoFile.name} (
+              {(videoFile.size / 1024 / 1024).toFixed(1)}MB)
+            </p>
+          )}
+          <input
+            type="file"
+            accept="video/*"
+            onChange={handleVideoFileChange}
+            className="text-sm text-charcoal file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gold file:text-dark file:font-medium file:text-sm hover:file:bg-dark hover:file:text-white file:transition-colors"
+          />
+        </div>
+      </div>
+
       <div className="bg-white rounded-2xl shadow-sm p-6">
         <label className="block text-sm font-medium text-dark mb-3">
           Connected Trips
@@ -380,16 +465,18 @@ export default function PlaceForm({ initialData }) {
       <div className="flex items-center gap-4">
         <button
           type="submit"
-          disabled={saving || uploadingMain}
+          disabled={saving || uploadingMain || uploadingVideo}
           className="bg-gold hover:bg-dark hover:text-white transition-colors duration-200 text-dark font-semibold px-8 py-3 rounded disabled:opacity-60"
         >
-          {uploadingMain
-            ? "Uploading image..."
-            : saving
-              ? "Saving..."
-              : isEdit
-                ? "Save Changes"
-                : "Create Destination"}
+          {uploadingVideo
+            ? "Uploading video..."
+            : uploadingMain
+              ? "Uploading image..."
+              : saving
+                ? "Saving..."
+                : isEdit
+                  ? "Save Changes"
+                  : "Create Destination"}
         </button>
         <button
           type="button"

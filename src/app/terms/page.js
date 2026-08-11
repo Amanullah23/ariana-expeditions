@@ -17,7 +17,7 @@ export default function Terms() {
           Terms &amp; Conditions
         </h1>
         <p className="text-white/80 max-w-xl mx-auto">
-          Your Adventure, Our Commitment
+          Your Explorers, Our Commitment
         </p>
       </section>
 
@@ -29,7 +29,7 @@ export default function Terms() {
           <p className="text-charcoal leading-relaxed mb-3">
             <strong className="text-dark">1. Secure Your Spot</strong> — To
             reserve your place, simply complete our Booking Form. It&apos;s the
-            first step toward your Afghan adventure.
+            first step toward your Afghan journey.
           </p>
           <p className="text-charcoal leading-relaxed mb-3">
             <strong className="text-dark">2. Deposit &amp; Payment</strong> — A
@@ -103,7 +103,7 @@ export default function Terms() {
             By booking with Ariana Expeditions, you confirm that you have read,
             understood, and accepted these Terms &amp; Conditions. You&apos;re
             ready to explore Afghanistan with an open heart and a spirit of
-            adventure.
+            journey.
           </p>
         </div>
       </section>

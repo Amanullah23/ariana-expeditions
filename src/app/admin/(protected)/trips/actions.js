@@ -46,6 +46,8 @@ export async function createTrip(formData) {
       highlights: formData.highlights.filter(Boolean),
       includes: formData.includes.filter(Boolean),
       excludes: formData.excludes.filter(Boolean),
+      youtube_url: formData.youtubeUrl || null,
+      video_url: formData.videoUrl || null,
     })
     .select()
     .single();
@@ -91,6 +93,8 @@ export async function updateTrip(id, formData) {
       highlights: formData.highlights.filter(Boolean),
       includes: formData.includes.filter(Boolean),
       excludes: formData.excludes.filter(Boolean),
+      youtube_url: formData.youtubeUrl || null,
+      video_url: formData.videoUrl || null,
     })
     .eq("id", id);
 

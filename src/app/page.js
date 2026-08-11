@@ -55,8 +55,8 @@ export default async function Home() {
             className="fade-up-in font-heading font-extrabold text-3xl md:text-3xl lg:text-6xl text-white leading-[1.05] mb-6"
             style={{ animationDelay: "0.25s" }}
           >
-            Afghanistan <br className="hidden md:block" />
-            <span className="italic text-gold">Beyond the Headlines</span>
+            Travel Through <br className="hidden md:block" />
+            <span className="italic text-gold">the Whole Story</span>
           </h1>
 
           <p
@@ -80,10 +80,10 @@ export default async function Home() {
             style={{ animationDelay: "0.65s" }}
           >
             <Link
-              href="/trips"
+              href="/blog"
               className="bg-gold hover:bg-white transition-colors duration-300 text-dark font-semibold px-8 py-3 rounded"
             >
-              Explore Trips
+              Read the Stories
             </Link>
             <Link
               href="/plan-your-trip"
