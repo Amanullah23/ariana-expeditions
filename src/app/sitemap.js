@@ -3,7 +3,7 @@ import { getPublicBlogPosts } from "@/lib/data/blog";
 import { getPublicPlaces } from "@/lib/data/places";
 
 export default async function sitemap() {
-  const base = "https://arianaexpeditions.com";
+  const base = "https://ariana-expeditions.com";
 
   const staticPages = [
     "",

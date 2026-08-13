@@ -21,7 +21,7 @@ const inter = Inter({
 });
 
 export const metadata = {
-  metadataBase: new URL("https://arianaexpeditions.com"),
+  metadataBase: new URL("https://ariana-expeditions.com"),
   title: {
     default: "Ariana Expeditions | Afghanistan Tours & Travel Specialist",
     template: "%s | Ariana Expeditions",
@@ -43,7 +43,7 @@ export const metadata = {
     title: "Ariana Expeditions | Afghanistan Tours & Travel Specialist",
     description:
       "Guided Afghanistan tours and cultural expeditions — Bamiyan, the Silk Road cities, and the Wakhan Corridor, led by a trusted Afghanistan travel specialist.",
-    url: "https://arianaexpeditions.com",
+    url: "https://ariana-expeditions.com",
     siteName: "Ariana Expeditions",
     images: ["/images/hero1.jpg"],
     locale: "en_US",

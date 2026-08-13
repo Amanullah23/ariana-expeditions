@@ -19,7 +19,7 @@ const contactCards = [
     role: "For general inquiries, partnerships, and press",
     phone: "+31 6 17285552",
     whatsapp: "https://wa.me/31617285552",
-    email: "info@arianaexpeditions.com",
+    email: "info@ariana-expeditions.com",
     icon: <FaEnvelope className="w-7 h-7" />,
   },
   {
@@ -28,7 +28,7 @@ const contactCards = [
     role: "Founder & Guide, Kabul, Afghanistan",
     phone: "+93 78 988 9592",
     whatsapp: "https://wa.me/93789889592",
-    email: "jalal.musavi@arianaexpeditions.com",
+    email: "jalal.musavi@ariana-expeditions.com",
     icon: <FaLocationDot className="w-7 h-7" />,
   },
   {

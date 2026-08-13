@@ -5,9 +5,9 @@ export default function StructuredData() {
     name: "Ariana Expeditions",
     description:
       "Afghanistan travel specialist offering guided cultural tours, group tours, and custom itineraries across Afghanistan and Central Asia.",
-    url: "https://arianaexpeditions.com",
+    url: "https://ariana-expeditions.com",
     telephone: "+31617285552",
-    email: "info@arianaexpeditions.com",
+    email: "info@ariana-expeditions.com",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Kabul",
