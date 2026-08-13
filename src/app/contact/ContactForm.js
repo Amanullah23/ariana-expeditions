@@ -24,11 +24,11 @@ const contactCards = [
   },
   {
     label: "Kabul Office",
-    name: "Mr. Jalal Mosavi",
+    name: "Mr. Jalal Musavi",
     role: "Founder & Guide, Kabul, Afghanistan",
     phone: "+93 78 988 9592",
     whatsapp: "https://wa.me/93789889592",
-    email: "jalal.mosavi@arianaexpeditions.com",
+    email: "jalal.musavi@arianaexpeditions.com",
     icon: <FaLocationDot className="w-7 h-7" />,
   },
   {
@@ -36,7 +36,7 @@ const contactCards = [
     name: "Mr. Rik Alexander",
     role: "Co-Founder, Berlin, Germany",
     phone: "+31 6 17285552",
-    whatsapp: "https://wa.me/31617285552",
+    whatsapp: "https://wa.me/31612766779",
     email: "rik@arianaexpeditions.com",
     icon: <FaLocationDot className="w-7 h-7" />,
   },

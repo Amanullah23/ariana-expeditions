@@ -16,12 +16,12 @@ import {
 const socialLinks = [
   {
     name: "Facebook",
-    href: "https://www.facebook.com/share/1BhJzeDQ1u/",
+    href: "https://www.facebook.com/share/19FLN5i8r6/?mibextid=wwXIfr",
     icon: <FaFacebookF className="w-4 h-4" />,
   },
   {
     name: "WhatsApp",
-    href: "https://wa.me/93789889592",
+    href: "https://wa.me/31612766779",
     icon: <FaWhatsapp className="w-4 h-4" />,
   },
   {
