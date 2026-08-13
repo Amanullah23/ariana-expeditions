@@ -151,7 +151,9 @@ export default function Contact() {
                     <span className="shrink-0 w-9 h-9 rounded-full bg-gold/20 group-hover:bg-gold flex items-center justify-center transition-colors duration-200">
                       <FaEnvelope className="w-4.5 h-4.5 text-gold group-hover:text-dark transition-colors duration-200" />
                     </span>
-                    <span className="font-medium break-all">{c.email}</span>
+                    <span className="font-medium wrap-break-word">
+                      {c.email}
+                    </span>
                   </a>
                 </div>
               </div>
