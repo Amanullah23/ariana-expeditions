@@ -35,7 +35,7 @@ const contactCards = [
     label: "Germany Office",
     name: "Mr. Rik Alexander",
     role: "Co-Founder, Berlin, Germany",
-    phone: "+31 6 17285552",
+    phone: "+31 6 12766779",
     whatsapp: "https://wa.me/31612766779",
     email: "rik@ariana-expeditions.com",
     icon: <FaLocationDot className="w-7 h-7" />,
