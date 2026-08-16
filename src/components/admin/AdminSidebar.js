@@ -47,6 +47,7 @@ const navData = [
       { label: "Blog", href: "/admin/blog" },
       { label: "Testimonials", href: "/admin/testimonials" },
       { label: "FAQ", href: "/admin/faq" },
+      { label: "Contact Form", href: "/admin/inquiries" },
     ],
   },
   {
@@ -216,7 +217,7 @@ export default function AdminSidebar({
                 {!collapsed && (
                   <div
                     className={`overflow-hidden transition-all duration-300 ${
-                      isOpen ? "max-h-40" : "max-h-0"
+                      isOpen ? "max-h-60" : "max-h-0"
                     }`}
                   >
                     <div className="ml-5 pl-4 pr-2 py-1 space-y-1 border-l border-white/20">

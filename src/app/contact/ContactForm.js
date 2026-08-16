@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
 import { createClient } from "@/lib/supabase/client";
 import { trackAction } from "@/components/AnalyticsTracker";
+import { uploadPrivateDocument } from "@/lib/supabase/uploadPrivateDocument";
 import {
   FaPhone,
   FaWhatsapp,
@@ -42,8 +43,35 @@ const contactCards = [
   },
 ];
 
+const MAX_PASSPORT_MB = 5;
+
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
+  const [passportFile, setPassportFile] = useState(null);
+  const [passportError, setPassportError] = useState("");
+  const [uploadingPassport, setUploadingPassport] = useState(false);
+
+  function handlePassportChange(e) {
+    const file = e.target.files[0];
+    setPassportError("");
+    if (!file) {
+      setPassportFile(null);
+      return;
+    }
+
+    const sizeMB = file.size / 1024 / 1024;
+    if (sizeMB > MAX_PASSPORT_MB) {
+      setPassportError(
+        `That file is ${sizeMB.toFixed(1)}MB — the maximum allowed is ${MAX_PASSPORT_MB}MB.`,
+      );
+      e.target.value = "";
+      setPassportFile(null);
+      return;
+    }
+
+    setPassportFile(file);
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     const form = e.target;
@@ -57,6 +85,24 @@ export default function Contact() {
       });
 
       if (res.ok) {
+        // Upload the passport privately first (if provided), so we can
+        // store just its path — never a public link — alongside the inquiry.
+        let passportPath = null;
+        if (passportFile) {
+          setUploadingPassport(true);
+          try {
+            passportPath = await uploadPrivateDocument(
+              passportFile,
+              "passports",
+            );
+          } catch (uploadErr) {
+            console.error("Passport upload failed:", uploadErr.message);
+            // Don't block the inquiry itself if this one piece fails —
+            // the message/contact details still matter more than the attachment.
+          }
+          setUploadingPassport(false);
+        }
+
         // Also save to Supabase so it shows up in the admin dashboard
         const supabase = createClient();
         await supabase.from("inquiries").insert({
@@ -67,11 +113,13 @@ export default function Contact() {
           travel_dates: data.get("travelDates"),
           travelers: data.get("travelers"),
           message: data.get("message"),
+          passport_path: passportPath,
         });
 
         setSubmitted(true);
         trackAction("Contact form submitted");
         form.reset();
+        setPassportFile(null);
       } else {
         alert("Something went wrong — please try again or email us directly.");
       }
@@ -151,9 +199,7 @@ export default function Contact() {
                     <span className="shrink-0 w-9 h-9 rounded-full bg-gold/20 group-hover:bg-gold flex items-center justify-center transition-colors duration-200">
                       <FaEnvelope className="w-4.5 h-4.5 text-gold group-hover:text-dark transition-colors duration-200" />
                     </span>
-                    <span className="font-medium wrap-break-word">
-                      {c.email}
-                    </span>
+                    <span className="font-medium break-words">{c.email}</span>
                   </a>
                 </div>
               </div>
@@ -221,6 +267,35 @@ export default function Contact() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-dark mb-1">
+                  Passport{" "}
+                  <span className="text-charcoal/50 font-normal">
+                    (optional — speeds up booking, max {MAX_PASSPORT_MB}MB)
+                  </span>
+                </label>
+                {passportError && (
+                  <p className="text-red-600 text-sm bg-red-50 rounded px-3 py-2 mb-2">
+                    {passportError}
+                  </p>
+                )}
+                {passportFile && (
+                  <p className="text-xs text-gold mb-2">
+                    Selected: {passportFile.name} (
+                    {(passportFile.size / 1024 / 1024).toFixed(1)}MB)
+                  </p>
+                )}
+                <input
+                  type="file"
+                  accept="image/*,.pdf,.heic,.heif"
+                  onChange={handlePassportChange}
+                  className="text-sm text-charcoal file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gold file:text-dark file:font-medium file:text-sm hover:file:bg-dark hover:file:text-white file:transition-colors"
+                />
+                <p className="text-xs text-charcoal/60 mt-1">
+                  Stored securely and only visible to our team — never shown
+                  publicly.
+                </p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-dark mb-1">
                   Preferred Trip
                 </label>
                 <select
@@ -271,9 +346,10 @@ export default function Contact() {
               </div>
               <button
                 type="submit"
-                className="w-full bg-gold hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold py-3 rounded"
+                disabled={uploadingPassport}
+                className="w-full bg-gold hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold py-3 rounded disabled:opacity-60"
               >
-                Send Inquiry
+                {uploadingPassport ? "Uploading passport..." : "Send Inquiry"}
               </button>
             </form>
           )}
