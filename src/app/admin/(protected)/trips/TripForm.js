@@ -169,8 +169,8 @@ function ItineraryBuilder({ days, setDays }) {
               value={d.desc}
               onChange={(e) => update(i, "desc", e.target.value)}
               placeholder="Description"
-              rows={2}
-              className="mt-3 w-full border border-dark/20 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold"
+              rows={5}
+              className="mt-3 w-full border border-dark/20 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-gold resize-y"
             />
           </div>
         ))}

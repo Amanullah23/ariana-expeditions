@@ -25,11 +25,16 @@ export default function AccordionItem({ day, title, desc }) {
         </span>
       </button>
       <div
-        className={`overflow-hidden transition-all duration-300 ease-in-out ${
-          open ? "max-h-40 pb-4" : "max-h-0"
-        }`}
+        className="grid transition-all duration-300 ease-in-out"
+        style={{ gridTemplateRows: open ? "1fr" : "0fr" }}
       >
-        <p className="text-charcoal text-sm">{desc}</p>
+        <div className="overflow-hidden">
+          <p
+            className={`text-charcoal text-sm whitespace-pre-line ${open ? "pb-4" : ""}`}
+          >
+            {desc}
+          </p>
+        </div>
       </div>
     </div>
   );
