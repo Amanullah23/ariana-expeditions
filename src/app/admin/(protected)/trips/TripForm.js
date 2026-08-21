@@ -53,6 +53,71 @@ function RepeatableList({ label, items, setItems, placeholder }) {
     </div>
   );
 }
+function GalleryUploader({
+  images,
+  setImages,
+  uploadingIndex,
+  setUploadingIndex,
+}) {
+  async function handleFileAdd(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const idx = images.length;
+    setUploadingIndex(idx);
+    try {
+      const url = await uploadImage(file, "trips-gallery");
+      setImages([...images, url]);
+    } catch (err) {
+      alert("Upload failed: " + err.message);
+    }
+    setUploadingIndex(null);
+    e.target.value = "";
+  }
+
+  function removeImage(idx) {
+    setImages(images.filter((_, i) => i !== idx));
+  }
+
+  return (
+    <div>
+      <label className="block text-sm font-medium text-dark mb-2">
+        Gallery Images
+      </label>
+      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 mb-3">
+        {images.map((url, idx) => (
+          <div key={idx} className="relative group">
+            <img
+              src={url}
+              alt=""
+              className="w-full h-20 object-cover rounded-lg border border-dark/10"
+            />
+            <button
+              type="button"
+              onClick={() => removeImage(idx)}
+              className="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/60 text-white text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            >
+              ✕
+            </button>
+          </div>
+        ))}
+        {uploadingIndex !== null && (
+          <div className="w-full h-20 rounded-lg border border-dark/10 bg-cream flex items-center justify-center text-xs text-charcoal/50">
+            Uploading...
+          </div>
+        )}
+      </div>
+      <input
+        type="file"
+        accept="image/*,.heic,.heif"
+        onChange={handleFileAdd}
+        className="text-sm text-charcoal file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gold file:text-dark file:font-medium file:text-sm hover:file:bg-dark hover:file:text-white file:transition-colors"
+      />
+      <p className="text-xs text-charcoal/60 mt-1">
+        Add photos one at a time — each uploads automatically.
+      </p>
+    </div>
+  );
+}
 
 function ItineraryBuilder({ days, setDays }) {
   function update(i, field, value) {
@@ -129,6 +194,8 @@ export default function TripForm({ initialData }) {
   const [videoUrl, setVideoUrl] = useState(initialData?.video_url || "");
   const [videoError, setVideoError] = useState("");
   const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [gallery, setGallery] = useState(initialData?.gallery || []);
+  const [galleryUploadingIndex, setGalleryUploadingIndex] = useState(null);
 
   const MAX_VIDEO_MB = 20;
 
@@ -207,6 +274,7 @@ export default function TripForm({ initialData }) {
         difficulty,
         desc,
         img: finalImageUrl,
+        gallery,
         highlights,
         includes,
         excludes,
@@ -324,6 +392,14 @@ export default function TripForm({ initialData }) {
             Storage.
           </p>
         </div>
+      </div>
+      <div className="bg-white rounded-2xl shadow-sm p-6">
+        <GalleryUploader
+          images={gallery}
+          setImages={setGallery}
+          uploadingIndex={galleryUploadingIndex}
+          setUploadingIndex={setGalleryUploadingIndex}
+        />
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm p-6">
