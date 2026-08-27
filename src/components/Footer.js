@@ -50,6 +50,7 @@ const destinationLinks = [
   { label: "Explore All Sites", href: "/places" },
   { label: "Trips & Itineraries", href: "/trips" },
   { label: "Plan Your Trip", href: "/plan-your-trip" },
+  { label: "E-Visa", href: "/e-visa" },
 ];
 
 const exploreLinks = [
