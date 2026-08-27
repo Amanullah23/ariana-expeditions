@@ -210,12 +210,11 @@ export default async function FAQ() {
               <AccordionFAQ items={grouped[cat]} />
               {cat === "Visa & Entry" && (
                 <a
-                  href="https://eafghans.com/e-visa/"
-                  target="_blank"
+                  href="/e-visa/"
                   rel="noopener noreferrer"
                   className="inline-block mt-4 bg-gold hover:bg-dark hover:text-white transition-colors duration-300 text-dark font-semibold px-6 py-2 rounded text-sm"
                 >
-                  Apply for e-Visa →
+                  Ream more about e-visa
                 </a>
               )}
             </div>
