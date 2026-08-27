@@ -44,7 +44,6 @@ const navData = [
     links: [
       { label: "About", href: "/admin/about" },
       { label: "Places", href: "/admin/places" },
-      { label: "Blog", href: "/admin/blog" },
       { label: "Testimonials", href: "/admin/testimonials" },
       { label: "FAQ", href: "/admin/faq" },
       { label: "Contact Form", href: "/admin/inquiries" },

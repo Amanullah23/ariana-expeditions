@@ -80,7 +80,7 @@ export default async function Home() {
             style={{ animationDelay: "0.65s" }}
           >
             <Link
-              href="/blog"
+              href="/testimonials"
               className="bg-gold hover:bg-white transition-colors duration-300 text-dark font-semibold px-8 py-3 rounded"
             >
               Read the Stories
