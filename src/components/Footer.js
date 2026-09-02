@@ -26,7 +26,7 @@ const socialLinks = [
   },
   {
     name: "Instagram",
-    href: "https://www.instagram.com/discover_afghanistan1?igsh=b21mMm0yZnRjZHlo&utm_source=qr",
+    href: "https://www.instagram.com/arianaexpeditions?igsi=MXhjdTN4bzJwNzM3OQ==",
     icon: <FaInstagram className="w-4 h-4" />,
   },
   {
