@@ -19,7 +19,7 @@ const contactCards = [
     name: "Ariana Expeditions Team",
     role: "For general inquiries, partnerships, and press",
     phone: "+93 77 079 7126",
-    whatsapp: "https://wa.me/31617285552",
+    whatsapp: "https://wa.me/93770797126",
     email: "info@ariana-expeditions.com",
     icon: <FaEnvelope className="w-7 h-7" />,
   },
