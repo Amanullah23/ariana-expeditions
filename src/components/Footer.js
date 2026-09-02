@@ -21,7 +21,7 @@ const socialLinks = [
   },
   {
     name: "WhatsApp",
-    href: "https://wa.me/31612766779",
+    href: "https://wa.me/93770797126",
     icon: <FaWhatsapp className="w-4 h-4" />,
   },
   {
