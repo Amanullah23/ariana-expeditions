@@ -31,12 +31,12 @@ const socialLinks = [
   },
   {
     name: "YouTube",
-    href: "https://www.youtube.com/@Discover_Afghanistan-p8l",
+    href: "https://www.youtube.com/@Ariana_Expeditions",
     icon: <FaYoutube className="w-4 h-4" />,
   },
   {
     name: "Threads",
-    href: "https://www.threads.com/@discover_afghanistan1?xmt=AQG0_ZU4T1UoZN9MIxrBetPbcc9mr6qbxA_nKkxL4ffK3qU",
+    href: "https://www.threads.com/@arianaexpeditions",
     icon: <FaThreads className="w-4 h-4" />,
   },
   {
