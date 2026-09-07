@@ -5,16 +5,14 @@ export async function getAnalyticsSummary() {
   const supabase = await createClient();
 
   const now = new Date();
-  const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString();
-  const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000).toISOString();
-  const fourteenDaysAgo = new Date(
-    now - 14 * 24 * 60 * 60 * 1000,
-  ).toISOString();
+  const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
+  const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
+  const fourteenDaysAgo = new Date(now - 14 * 24 * 60 * 60 * 1000);
 
   const { data: allEvents, error } = await supabase
     .from("analytics_events")
     .select("*")
-    .gte("created_at", thirtyDaysAgo)
+    .gte("created_at", thirtyDaysAgo.toISOString())
     .order("created_at", { ascending: true });
 
   if (error) throw new Error(error.message);
@@ -22,22 +20,17 @@ export async function getAnalyticsSummary() {
   const pageviews = allEvents.filter((e) => e.event_type === "pageview");
   const actions = allEvents.filter((e) => e.event_type === "action");
 
-  // Total views
   const totalViews = pageviews.length;
-
-  // Unique visitors (by distinct hash, over the 30-day window)
   const uniqueVisitors = new Set(pageviews.map((e) => e.visitor_hash)).size;
 
-  // Last 7 / 30 days
   const last7Days = pageviews.filter(
-    (e) => e.created_at >= sevenDaysAgo,
+    (e) => new Date(e.created_at) >= sevenDaysAgo,
   ).length;
   const last30Days = totalViews;
 
-  // New vs returning: a hash is "returning" if it appears on more than one distinct day
   const hashDays = {};
   pageviews.forEach((e) => {
-    const day = e.created_at.slice(0, 10);
+    const day = new Date(e.created_at).toISOString().slice(0, 10);
     if (!hashDays[e.visitor_hash]) hashDays[e.visitor_hash] = new Set();
     hashDays[e.visitor_hash].add(day);
   });
@@ -48,7 +41,6 @@ export async function getAnalyticsSummary() {
     else newVisitors++;
   });
 
-  // 14-day daily view counts
   const dailyCounts = {};
   for (let i = 13; i >= 0; i--) {
     const d = new Date(now - i * 24 * 60 * 60 * 1000)
@@ -57,9 +49,9 @@ export async function getAnalyticsSummary() {
     dailyCounts[d] = 0;
   }
   pageviews
-    .filter((e) => e.created_at >= fourteenDaysAgo)
+    .filter((e) => new Date(e.created_at) >= fourteenDaysAgo)
     .forEach((e) => {
-      const day = e.created_at.slice(0, 10);
+      const day = new Date(e.created_at).toISOString().slice(0, 10);
       if (dailyCounts[day] !== undefined) dailyCounts[day]++;
     });
   const dailySeries = Object.entries(dailyCounts).map(([date, count]) => ({
@@ -67,7 +59,6 @@ export async function getAnalyticsSummary() {
     count,
   }));
 
-  // Top pages
   const pageCounts = {};
   pageviews.forEach((e) => {
     const p = e.path || "/";
@@ -78,7 +69,6 @@ export async function getAnalyticsSummary() {
     .slice(0, 6)
     .map(([path, count]) => ({ label: path, count }));
 
-  // Top referrers
   const refCounts = {};
   pageviews.forEach((e) => {
     const r = e.referrer && e.referrer !== "internal" ? e.referrer : "direct";
@@ -89,7 +79,6 @@ export async function getAnalyticsSummary() {
     .slice(0, 6)
     .map(([label, count]) => ({ label, count }));
 
-  // Top countries
   const countryCounts = {};
   pageviews.forEach((e) => {
     const c = e.country || "Unknown";
@@ -100,7 +89,6 @@ export async function getAnalyticsSummary() {
     .slice(0, 7)
     .map(([label, count]) => ({ label, count }));
 
-  // Devices
   const deviceCounts = {};
   pageviews.forEach((e) => {
     const d = e.device || "Desktop";
@@ -111,7 +99,6 @@ export async function getAnalyticsSummary() {
     count,
   }));
 
-  // Key actions
   const actionCounts = {};
   actions.forEach((e) => {
     const name = e.action_name || "Unknown action";
