@@ -13,7 +13,8 @@ export async function getAnalyticsSummary() {
     .from("analytics_events")
     .select("*")
     .gte("created_at", thirtyDaysAgo.toISOString())
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: true })
+    .limit(5000);
 
   if (error) throw new Error(error.message);
 
@@ -26,6 +27,7 @@ export async function getAnalyticsSummary() {
   const last7Days = pageviews.filter(
     (e) => new Date(e.created_at) >= sevenDaysAgo,
   ).length;
+
   const last30Days = totalViews;
 
   const hashDays = {};
