@@ -78,7 +78,11 @@ export default function Contact() {
     const data = new FormData(form);
 
     try {
-      const res = await fetch("https://formspree.io/f/mrenrygb", {
+      data.append("access_key", "a6d7f07a-51c6-4920-89f9-7c150e905c2a");
+      data.append("from_name", "Ariana Expeditions");
+      data.append("subject", "New Inquiry — Ariana Expeditions Website");
+
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         body: data,
         headers: { Accept: "application/json" },
