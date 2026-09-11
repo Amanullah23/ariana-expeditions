@@ -1,7 +1,7 @@
 import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
 import BackToTop from "@/components/BackToTop";
-//import WhatsAppButton from "@/components/WhatsAppButton";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import CookieConsent from "@/components/CookieConsent";
 import StructuredData from "@/components/StructuredData";
 import TopLoader from "@/components/TopLoader";
@@ -63,6 +63,7 @@ export default function RootLayout({ children }) {
         <StructuredData />
         {children}
         <BackToTop />
+        <WhatsAppButton />
       </body>
     </html>
   );
