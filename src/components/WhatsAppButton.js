@@ -1,15 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { FaWhatsapp } from "react-icons/fa6";
 import { trackAction } from "@/components/AnalyticsTracker";
 
 export default function WhatsAppButton() {
+  const pathname = usePathname();
   const [showTooltip, setShowTooltip] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowTooltip(true), 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex items-center gap-3">

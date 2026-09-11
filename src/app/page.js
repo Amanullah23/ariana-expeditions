@@ -8,15 +8,23 @@ import DestinationMarquee from "@/components/DestinationMarquee";
 import { getPublicTrips } from "@/lib/data/trips";
 import { getPublicThemes } from "@/lib/data/places";
 import { getPublicTestimonials } from "@/lib/data/testimonials";
+import TripAdvisorSection from "@/components/TripAdvisorSection";
+import {
+  getTripAdvisorInfo,
+  getTripAdvisorReviews,
+} from "@/lib/data/tripadvisor";
 
 export const revalidate = 0;
 
 export default async function Home() {
-  const [allTrips, themes, testimonials] = await Promise.all([
-    getPublicTrips(),
-    getPublicThemes(),
-    getPublicTestimonials(3),
-  ]);
+  const [allTrips, themes, testimonials, tripadvisorInfo, tripadvisorReviews] =
+    await Promise.all([
+      getPublicTrips(),
+      getPublicThemes(),
+      getPublicTestimonials(),
+      getTripAdvisorInfo(),
+      getTripAdvisorReviews(),
+    ]);
 
   const trips = allTrips.slice(0, 4);
 
@@ -265,7 +273,7 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      <TripAdvisorSection info={tripadvisorInfo} reviews={tripadvisorReviews} />
       {/* Testimonials */}
       {testimonials.length > 0 && (
         <section className="bg-cream py-20 px-6">

@@ -187,6 +187,22 @@ select:focus-visible {
     transform: translateY(0);
   }
 }
+@keyframes fade-slide {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-fade-slide {
+  animation: fade-slide 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.animate-fade-slide {
+  animation: fade-slide 0.5s ease-out;
+}
 .animate-fade-in-up {
   animation: fade-in-up 0.4s ease-out;
 }
