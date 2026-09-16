@@ -98,7 +98,10 @@ export async function uploadImage(file, folder = "general") {
 
   const { error } = await supabase.storage
     .from("site-images")
-    .upload(fileName, compressedFile, { cacheControl: "3600", upsert: false });
+    .upload(fileName, compressedFile, {
+      cacheControl: "31536000",
+      upsert: false,
+    });
 
   if (error) throw new Error(error.message);
 

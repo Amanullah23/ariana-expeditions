@@ -20,7 +20,7 @@ export async function uploadVideo(file, folder = "videos") {
 
   const { error } = await supabase.storage
     .from("site-images")
-    .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    .upload(fileName, file, { cacheControl: "31536000", upsert: false });
 
   if (error) throw new Error(error.message);
 

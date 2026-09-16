@@ -16,7 +16,7 @@ export async function uploadPrivateDocument(file, folder = "passports") {
 
   const { error } = await supabase.storage
     .from("private-documents")
-    .upload(fileName, file, { cacheControl: "3600", upsert: false });
+    .upload(fileName, file, { cacheControl: "31536000", upsert: false });
 
   if (error) throw new Error(error.message);
 
