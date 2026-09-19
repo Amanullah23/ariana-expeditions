@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
-import MfaEnrollment from "@/components/admin/MfaEnrollment";
 
 export default function AdminSettings() {
   const [name, setName] = useState("");
@@ -258,11 +257,6 @@ export default function AdminSettings() {
           {savingPassword ? "Updating..." : "Update Password"}
         </button>
       </form>
-
-      {/* 2FA */}
-      <div className="mb-8">
-        <MfaEnrollment />
-      </div>
 
       {/* Notifications */}
       <div className="bg-white rounded-2xl shadow-sm p-6 space-y-4">

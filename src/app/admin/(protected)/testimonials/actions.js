@@ -1,32 +1,20 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function getTestimonials() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("testimonials")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) throw new Error(error.message);
-  return data;
+  return query("select * from testimonials order by created_at desc");
 }
 
 export async function getTestimonialById(id) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("testimonials")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
+  const rows = await query("select * from testimonials where id = $1", [id]);
+  if (!rows[0]) throw new Error("Testimonial not found");
+  return rows[0];
 }
 
 export async function createTestimonial(formData) {
-  const supabase = await createClient();
+  await requireSession();
 
   const slug =
     formData.name
@@ -36,53 +24,49 @@ export async function createTestimonial(formData) {
     "-" +
     Math.random().toString(36).slice(2, 8);
 
-  const { count } = await supabase
-    .from("testimonials")
-    .select("*", { count: "exact", head: true });
+  const countRows = await query("select count(*) from testimonials");
+  const sortOrder = Number(countRows[0].count) || 0;
 
-  const { data, error } = await supabase
-    .from("testimonials")
-    .insert({
+  const rows = await query(
+    `insert into testimonials (slug, name, location, quote, img, sort_order)
+     values ($1, $2, $3, $4, $5, $6)
+     returning *`,
+    [
       slug,
-      name: formData.name,
-      location: formData.location,
-      quote: formData.quote,
-      img: formData.imagePreview,
-      sort_order: count || 0,
-    })
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
+      formData.name,
+      formData.location,
+      formData.quote,
+      formData.imagePreview,
+      sortOrder,
+    ],
+  );
 
   revalidatePath("/admin/testimonials");
   revalidatePath("/");
   revalidatePath("/testimonials");
-  return data;
+  return rows[0];
 }
 
 export async function updateTestimonial(id, formData) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("testimonials")
-    .update({
-      name: formData.name,
-      location: formData.location,
-      quote: formData.quote,
-      img: formData.imagePreview,
-    })
-    .eq("id", id);
-
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query(
+    "update testimonials set name = $1, location = $2, quote = $3, img = $4 where id = $5",
+    [
+      formData.name,
+      formData.location,
+      formData.quote,
+      formData.imagePreview,
+      id,
+    ],
+  );
 
   revalidatePath("/admin/testimonials");
   revalidatePath("/");
 }
 
 export async function deleteTestimonial(id) {
-  const supabase = await createClient();
-  const { error } = await supabase.from("testimonials").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query("delete from testimonials where id = $1", [id]);
 
   revalidatePath("/admin/testimonials");
   revalidatePath("/");

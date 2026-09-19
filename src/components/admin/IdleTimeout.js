@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { logoutAction } from "@/lib/authActions";
 
 const IDLE_LIMIT = 30 * 60 * 1000; // 30 minutes
 const WARNING_BEFORE = 60 * 1000; // show warning 1 minute before logout
@@ -16,8 +16,7 @@ export default function IdleTimeout() {
   const countdownInterval = useRef(null);
 
   async function doLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await logoutAction();
     router.push("/admin/login");
     router.refresh();
   }

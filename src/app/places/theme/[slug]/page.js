@@ -4,29 +4,28 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Reveal from "@/components/Reveal";
-import { createClient } from "@/lib/supabase/public";
+import { query } from "@/lib/db";
 
 async function getThemeBySlug(slug) {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("destinations")
-    .select("*")
-    .eq("slug", slug)
-    .single();
-  if (error) return null;
-  return data;
+  try {
+    const rows = await query("select * from destinations where slug = $1", [
+      slug,
+    ]);
+    return rows[0] || null;
+  } catch {
+    return null;
+  }
 }
 
 async function getPlacesForTheme(themeId) {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("places")
-    .select("*")
-    .eq("destination_id", themeId)
-    .eq("status", "active")
-    .order("sort_order", { ascending: true });
-  if (error) return [];
-  return data;
+  try {
+    return await query(
+      "select * from places where destination_id = $1 and status = 'active' order by sort_order asc",
+      [themeId],
+    );
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }) {

@@ -1,31 +1,24 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 // ---- Overall info (singleton) ----
 
 export async function getInfo() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("tripadvisor_info")
-    .select("*")
-    .single();
-  if (error) throw new Error(error.message);
-  return data;
+  const rows = await query("select * from tripadvisor_info limit 1");
+  if (!rows[0]) throw new Error("tripadvisor_info row not found");
+  return rows[0];
 }
 
 export async function updateInfo(id, formData) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("tripadvisor_info")
-    .update({
-      overall_rating: formData.overallRating,
-      review_count: formData.reviewCount,
-      profile_url: formData.profileUrl,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query(
+    `update tripadvisor_info
+     set overall_rating = $1, review_count = $2, profile_url = $3, updated_at = now()
+     where id = $4`,
+    [formData.overallRating, formData.reviewCount, formData.profileUrl, id],
+  );
 
   revalidatePath("/admin/tripadvisor");
   revalidatePath("/");
@@ -34,96 +27,86 @@ export async function updateInfo(id, formData) {
 // ---- Reviews ----
 
 export async function getReviews() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("tripadvisor_reviews")
-    .select("*")
-    .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
-  return data;
+  return query("select * from tripadvisor_reviews order by sort_order asc");
 }
 
 export async function getReviewById(id) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("tripadvisor_reviews")
-    .select("*")
-    .eq("id", id)
-    .single();
-  if (error) throw new Error(error.message);
-  return data;
+  const rows = await query("select * from tripadvisor_reviews where id = $1", [
+    id,
+  ]);
+  if (!rows[0]) throw new Error("Review not found");
+  return rows[0];
 }
 
 export async function createReview(formData) {
-  const supabase = await createClient();
-  const { count } = await supabase
-    .from("tripadvisor_reviews")
-    .select("*", { count: "exact", head: true });
+  await requireSession();
 
-  const { data, error } = await supabase
-    .from("tripadvisor_reviews")
-    .insert({
-      reviewer_name: formData.reviewerName,
-      reviewer_location: formData.reviewerLocation,
-      review_date: formData.reviewDate,
-      rating: formData.rating,
-      title: formData.title,
-      excerpt: formData.excerpt,
-      review_url: formData.reviewUrl,
-      sort_order: count || 0,
-    })
-    .select()
-    .single();
-  if (error) throw new Error(error.message);
+  const countRows = await query("select count(*) from tripadvisor_reviews");
+  const sortOrder = Number(countRows[0].count) || 0;
+
+  const rows = await query(
+    `insert into tripadvisor_reviews
+      (reviewer_name, reviewer_location, review_date, rating, title, excerpt, review_url, sort_order)
+     values ($1,$2,$3,$4,$5,$6,$7,$8)
+     returning *`,
+    [
+      formData.reviewerName,
+      formData.reviewerLocation,
+      formData.reviewDate,
+      formData.rating,
+      formData.title,
+      formData.excerpt,
+      formData.reviewUrl,
+      sortOrder,
+    ],
+  );
 
   revalidatePath("/admin/tripadvisor");
   revalidatePath("/");
-  return data;
+  return rows[0];
 }
 
 export async function updateReview(id, formData) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("tripadvisor_reviews")
-    .update({
-      reviewer_name: formData.reviewerName,
-      reviewer_location: formData.reviewerLocation,
-      review_date: formData.reviewDate,
-      rating: formData.rating,
-      title: formData.title,
-      excerpt: formData.excerpt,
-      review_url: formData.reviewUrl,
-    })
-    .eq("id", id);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query(
+    `update tripadvisor_reviews set
+      reviewer_name=$1, reviewer_location=$2, review_date=$3, rating=$4,
+      title=$5, excerpt=$6, review_url=$7
+     where id=$8`,
+    [
+      formData.reviewerName,
+      formData.reviewerLocation,
+      formData.reviewDate,
+      formData.rating,
+      formData.title,
+      formData.excerpt,
+      formData.reviewUrl,
+      id,
+    ],
+  );
 
   revalidatePath("/admin/tripadvisor");
   revalidatePath("/");
 }
 
 export async function deleteReview(id) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from("tripadvisor_reviews")
-    .delete()
-    .eq("id", id);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query("delete from tripadvisor_reviews where id = $1", [id]);
 
   revalidatePath("/admin/tripadvisor");
   revalidatePath("/");
 }
 
 export async function reorderReviews(orderedIds) {
-  const supabase = await createClient();
-  const updates = orderedIds.map((id, index) =>
-    supabase
-      .from("tripadvisor_reviews")
-      .update({ sort_order: index })
-      .eq("id", id),
+  await requireSession();
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      query("update tripadvisor_reviews set sort_order = $1 where id = $2", [
+        index,
+        id,
+      ]),
+    ),
   );
-  const results = await Promise.all(updates);
-  const failed = results.find((r) => r.error);
-  if (failed) throw new Error(failed.error.message);
 
   revalidatePath("/admin/tripadvisor");
   revalidatePath("/");

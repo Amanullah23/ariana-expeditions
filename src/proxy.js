@@ -1,36 +1,32 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
-export async function proxy(request) {
-  let response = NextResponse.next({ request });
+const SESSION_COOKIE = "ariana_session";
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value),
-          );
-          response = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            response.cookies.set(name, value, options),
-          );
-        },
-      },
-    },
-  );
+const PUBLIC_ADMIN_PATHS = [
+  "/admin/login",
+  "/admin/forgot-password",
+  "/admin/reset-password",
+];
 
-  // Refresh the session if needed
-  await supabase.auth.getUser();
+export function proxy(request) {
+  const { pathname } = request.nextUrl;
 
-  return response;
+  const isAdminRoute = pathname.startsWith("/admin");
+  const isPublicAdminPath = PUBLIC_ADMIN_PATHS.includes(pathname);
+
+  if (isAdminRoute && !isPublicAdminPath) {
+    const sessionCookie = request.cookies.get(SESSION_COOKIE);
+
+    if (!sessionCookie?.value) {
+      const loginUrl = new URL("/admin/login", request.url);
+      loginUrl.searchParams.set("redirectedFrom", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|images).*)"],
+  matcher: ["/admin/:path*"],
 };

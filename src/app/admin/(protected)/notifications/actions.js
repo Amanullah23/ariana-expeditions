@@ -1,25 +1,28 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export async function getNotifications() {
-  const supabase = await createClient();
+// SQL identifiers (table names) can't be parameterized like values can, so
+// any table name coming from the client must be checked against this
+// allowlist before being interpolated into a query string.
+const ALLOWED_TABLES = new Set(["inquiries", "newsletter_signups"]);
 
-  const [inquiriesRes, newsletterRes] = await Promise.all([
-    supabase
-      .from("inquiries")
-      .select("*")
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("newsletter_signups")
-      .select("*")
-      .order("created_at", { ascending: false }),
+function assertAllowedTable(table) {
+  if (!ALLOWED_TABLES.has(table)) {
+    throw new Error(`Invalid table: ${table}`);
+  }
+}
+
+export async function getNotifications() {
+  await requireSession();
+
+  const [inquiries, newsletter] = await Promise.all([
+    query("select * from inquiries order by created_at desc"),
+    query("select * from newsletter_signups order by created_at desc"),
   ]);
 
-  if (inquiriesRes.error) throw new Error(inquiriesRes.error.message);
-  if (newsletterRes.error) throw new Error(newsletterRes.error.message);
-
-  const inquiries = inquiriesRes.data.map((i) => ({
+  const inquiryNotifications = inquiries.map((i) => ({
     id: `inquiry-${i.id}`,
     rawId: i.id,
     table: "inquiries",
@@ -30,7 +33,7 @@ export async function getNotifications() {
     read: i.read,
   }));
 
-  const newsletter = newsletterRes.data.map((n) => ({
+  const newsletterNotifications = newsletter.map((n) => ({
     id: `newsletter-${n.id}`,
     rawId: n.id,
     table: "newsletter_signups",
@@ -41,49 +44,36 @@ export async function getNotifications() {
     read: n.read,
   }));
 
-  return [...inquiries, ...newsletter].sort(
+  return [...inquiryNotifications, ...newsletterNotifications].sort(
     (a, b) => new Date(b.time) - new Date(a.time),
   );
 }
 
 export async function markNotificationRead(table, rawId) {
-  const supabase = await createClient();
-  const { error } = await supabase
-    .from(table)
-    .update({ read: true })
-    .eq("id", rawId);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  assertAllowedTable(table);
+  await query(`update ${table} set read = true where id = $1`, [rawId]);
   revalidatePath("/admin/notifications");
 }
 
 export async function markAllNotificationsRead() {
-  const supabase = await createClient();
-  await supabase.from("inquiries").update({ read: true }).eq("read", false);
-  await supabase
-    .from("newsletter_signups")
-    .update({ read: true })
-    .eq("read", false);
+  await requireSession();
+  await query("update inquiries set read = true where read = false");
+  await query("update newsletter_signups set read = true where read = false");
   revalidatePath("/admin/notifications");
 }
 
 export async function dismissNotification(table, rawId) {
-  const supabase = await createClient();
-  const { error } = await supabase.from(table).delete().eq("id", rawId);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  assertAllowedTable(table);
+  await query(`delete from ${table} where id = $1`, [rawId]);
   revalidatePath("/admin/notifications");
 }
 
 export async function getUnreadCount() {
-  const supabase = await createClient();
-  const [inquiriesRes, newsletterRes] = await Promise.all([
-    supabase
-      .from("inquiries")
-      .select("id", { count: "exact", head: true })
-      .eq("read", false),
-    supabase
-      .from("newsletter_signups")
-      .select("id", { count: "exact", head: true })
-      .eq("read", false),
+  const [inquiriesCount, newsletterCount] = await Promise.all([
+    query("select count(*) from inquiries where read = false"),
+    query("select count(*) from newsletter_signups where read = false"),
   ]);
-  return (inquiriesRes.count || 0) + (newsletterRes.count || 0);
+  return Number(inquiriesCount[0].count) + Number(newsletterCount[0].count);
 }

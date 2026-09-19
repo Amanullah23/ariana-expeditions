@@ -1,34 +1,38 @@
-import { createClient } from "@/lib/supabase/public";
+import { query } from "@/lib/db";
 
 export async function getPublicTrips() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("trips")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (error) {
-    console.error("Failed to load trips:", error.message);
+  try {
+    return await query("select * from trips order by sort_order asc");
+  } catch (err) {
+    console.error("Failed to load trips:", err.message);
     return [];
   }
-  return data;
 }
 
 export async function getPublicTripBySlug(slug) {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("trips")
-    .select("*, trip_itinerary_items(*)")
-    .eq("slug", slug)
-    .single();
+  try {
+    const trips = await query("select * from trips where slug = $1", [slug]);
+    const trip = trips[0];
+    if (!trip) return null;
 
-  if (error) return null;
-  return data;
+    const items = await query(
+      "select * from trip_itinerary_items where trip_id = $1 order by sort_order asc",
+      [trip.id],
+    );
+
+    return { ...trip, trip_itinerary_items: items };
+  } catch (err) {
+    console.error("Failed to load trip:", err.message);
+    return null;
+  }
 }
 
 export async function getAllTripSlugs() {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("trips").select("slug");
-  if (error) return [];
-  return data.map((t) => t.slug);
+  try {
+    const trips = await query("select slug from trips");
+    return trips.map((t) => t.slug);
+  } catch (err) {
+    console.error("Failed to load trip slugs:", err.message);
+    return [];
+  }
 }

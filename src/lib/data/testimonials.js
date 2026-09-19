@@ -1,39 +1,34 @@
-import { createClient } from "@/lib/supabase/public";
+import { query } from "@/lib/db";
 
 export async function getPublicTestimonials(limit) {
-  const supabase = createClient();
-  let query = supabase
-    .from("testimonials")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (limit) query = query.limit(limit);
-
-  const { data, error } = await query;
-
-  if (error) {
-    console.error("Failed to load testimonials:", error.message);
+  try {
+    const sql = limit
+      ? "select * from testimonials order by sort_order asc limit $1"
+      : "select * from testimonials order by sort_order asc";
+    const params = limit ? [limit] : [];
+    return await query(sql, params);
+  } catch (err) {
+    console.error("Failed to load testimonials:", err.message);
     return [];
   }
-  return data;
 }
 
 export async function getPublicTestimonialBySlug(slug) {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("testimonials")
-    .select("*")
-    .eq("slug", slug)
-    .single();
-
-  if (error) return null;
-  return data;
+  try {
+    const rows = await query("select * from testimonials where slug = $1", [
+      slug,
+    ]);
+    return rows[0] || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getAllTestimonialSlugs() {
-  const supabase = createClient();
-  const { data, error } = await supabase.from("testimonials").select("slug");
-
-  if (error) return [];
-  return data.map((t) => t.slug).filter(Boolean);
+  try {
+    const rows = await query("select slug from testimonials");
+    return rows.map((t) => t.slug).filter(Boolean);
+  } catch {
+    return [];
+  }
 }

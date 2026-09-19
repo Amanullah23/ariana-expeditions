@@ -1,5 +1,8 @@
 @import "tailwindcss";
-
+:root {
+  --font-playfair: "Playfair Display", serif;
+  --font-inter: "Inter", sans-serif;
+}
 @theme {
   --color-dark: #142e2b;
   --color-dark-2: #1b3b37;
@@ -31,6 +34,7 @@
     font-family: var(--font-heading);
   }
 }
+
 @keyframes drift-dots {
   0% {
     background-position: 0px 0px;

@@ -3,7 +3,7 @@ import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/Reveal";
-import { createClient } from "@/lib/supabase/client";
+import { createInquiry } from "./actions";
 import { trackAction } from "@/components/AnalyticsTracker";
 import { uploadPrivateDocument } from "@/lib/supabase/uploadPrivateDocument";
 import {
@@ -107,17 +107,17 @@ export default function Contact() {
           setUploadingPassport(false);
         }
 
-        // Also save to Supabase so it shows up in the admin dashboard
-        const supabase = createClient();
-        await supabase.from("inquiries").insert({
+        // Save to our own Postgres DB (via a server action) so it shows up
+        // in the admin dashboard — replaces the old direct Supabase insert.
+        await createInquiry({
           fullname: data.get("fullname"),
           email: data.get("email"),
           phone: data.get("phone"),
-          preferred_trip: data.get("preferredTrip"),
-          travel_dates: data.get("travelDates"),
+          preferredTrip: data.get("preferredTrip"),
+          travelDates: data.get("travelDates"),
           travelers: data.get("travelers"),
           message: data.get("message"),
-          passport_path: passportPath,
+          passportPath,
         });
 
         setSubmitted(true);

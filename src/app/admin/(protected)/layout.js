@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { getSession } from "@/lib/auth";
 import AdminShell from "@/components/admin/AdminShell";
 import NotificationBadge from "@/components/admin/NotificationBadge";
 
@@ -9,19 +9,9 @@ export const metadata = {
 };
 
 export default async function AdminLayout({ children }) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const session = await getSession();
 
-  if (!user) {
-    redirect("/admin/login");
-  }
-
-  const { data: aalData } =
-    await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-
-  if (aalData?.nextLevel === "aal2" && aalData?.currentLevel !== "aal2") {
+  if (!session) {
     redirect("/admin/login");
   }
 

@@ -1,4 +1,14 @@
-import { createClient } from "@/lib/supabase/client";
+// src/lib/supabase/upload.js
+// (Path kept the same as the original so no import in any form component
+// needs to change — only what's inside changed.)
+//
+// The HEIC-conversion and client-side compression logic is UNCHANGED —
+// that's pure browser work and has nothing to do with where the file ends
+// up. Only the final "send it to storage" step changed: instead of
+// uploading straight to Supabase Storage from the browser, the compressed
+// file is POSTed to our own /api/admin/upload route, which saves it to
+// local disk on the server and returns its URL.
+
 import { isHeic, heicTo } from "heic-to";
 
 const MAX_DIMENSION = 1920; // longest side, in pixels — plenty sharp, no larger than needed
@@ -6,7 +16,7 @@ const JPEG_QUALITY = 0.8; // 80% — strong size reduction with negligible visib
 
 async function normalizeImage(file) {
   // HEIC/HEIF (common on iPhone photos) isn't viewable in any browser —
-  // convert it to a real JPEG before it ever reaches Supabase or next/image.
+  // convert it to a real JPEG before it ever reaches storage or next/image.
   const looksLikeHeic =
     file.type === "image/heic" ||
     file.type === "image/heif" ||
@@ -91,20 +101,15 @@ export async function uploadImage(file, folder = "general") {
   const normalizedFile = await normalizeImage(file);
   const compressedFile = await compressImage(normalizedFile);
 
-  const supabase = createClient();
+  const formData = new FormData();
+  formData.append("file", compressedFile);
+  formData.append("folder", folder);
 
-  const ext = compressedFile.name.split(".").pop();
-  const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-  const { error } = await supabase.storage
-    .from("site-images")
-    .upload(fileName, compressedFile, {
-      cacheControl: "31536000",
-      upsert: false,
-    });
-
-  if (error) throw new Error(error.message);
-
-  const { data } = supabase.storage.from("site-images").getPublicUrl(fileName);
-  return data.publicUrl;
+  const res = await fetch("/api/admin/upload", {
+    method: "POST",
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Upload failed");
+  return data.url;
 }

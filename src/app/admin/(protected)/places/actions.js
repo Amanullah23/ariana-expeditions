@@ -1,80 +1,74 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
-export async function getPlaces() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("places")
-    .select("*")
-    .order("sort_order", { ascending: true });
+// ---- Places ----
 
-  if (error) throw new Error(error.message);
-  return data;
+export async function getPlaces() {
+  return query("select * from places order by sort_order asc");
 }
 
 export async function getPlaceById(id) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("places")
-    .select("*, place_trips(trip_id)")
-    .eq("id", id)
-    .single();
+  const places = await query("select * from places where id = $1", [id]);
+  const place = places[0];
+  if (!place) throw new Error("Place not found");
 
-  if (error) throw new Error(error.message);
-  return data;
+  const links = await query(
+    "select trip_id from place_trips where place_id = $1",
+    [id],
+  );
+
+  return { ...place, place_trips: links };
 }
 
 export async function getAllThemesForSelect() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("destinations")
-    .select("id, title")
-    .order("title");
-
-  if (error) return [];
-  return data;
+  try {
+    return await query("select id, title from destinations order by title asc");
+  } catch {
+    return [];
+  }
 }
 
 export async function createPlace(formData) {
-  const supabase = await createClient();
+  await requireSession();
 
   const slug = formData.name
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-  const { data: place, error } = await supabase
-    .from("places")
-    .insert({
+  const rows = await query(
+    `insert into places
+      (slug, name, province, category, short_description, full_details, main_image,
+       gallery, visitor_experience, status, destination_id, youtube_url, video_url)
+     values ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+     returning *`,
+    [
       slug,
-      name: formData.name,
-      province: formData.province,
-      category: formData.category,
-      short_description: formData.shortDescription,
-      full_details: formData.fullDetails,
-      main_image: formData.mainImage,
-      gallery: formData.gallery.filter(Boolean),
-      visitor_experience: formData.visitorExperience,
-      status: formData.status,
-      destination_id: formData.destinationId || null,
-      youtube_url: formData.youtubeUrl || null,
-      video_url: formData.videoUrl || null,
-    })
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
+      formData.name,
+      formData.province,
+      formData.category,
+      formData.shortDescription,
+      formData.fullDetails,
+      formData.mainImage,
+      formData.gallery.filter(Boolean),
+      formData.visitorExperience,
+      formData.status,
+      formData.destinationId || null,
+      formData.youtubeUrl || null,
+      formData.videoUrl || null,
+    ],
+  );
+  const place = rows[0];
 
   if (formData.linkedTripIds?.length) {
-    const links = formData.linkedTripIds.map((tripId) => ({
-      place_id: place.id,
-      trip_id: tripId,
-    }));
-    const { error: linkError } = await supabase
-      .from("place_trips")
-      .insert(links);
-    if (linkError) throw new Error(linkError.message);
+    for (const tripId of formData.linkedTripIds) {
+      await query(
+        "insert into place_trips (place_id, trip_id) values ($1, $2)",
+        [place.id, tripId],
+      );
+    }
   }
 
   revalidatePath("/admin/places");
@@ -83,40 +77,40 @@ export async function createPlace(formData) {
 }
 
 export async function updatePlace(id, formData) {
-  const supabase = await createClient();
+  await requireSession();
 
-  const { error } = await supabase
-    .from("places")
-    .update({
-      name: formData.name,
-      province: formData.province,
-      category: formData.category,
-      short_description: formData.shortDescription,
-      full_details: formData.fullDetails,
-      main_image: formData.mainImage,
-      gallery: formData.gallery.filter(Boolean),
-      visitor_experience: formData.visitorExperience,
-      status: formData.status,
-      destination_id: formData.destinationId || null,
-      youtube_url: formData.youtubeUrl || null,
-      video_url: formData.videoUrl || null,
-      updated_at: new Date().toISOString(),
-    })
-    .eq("id", id);
-
-  if (error) throw new Error(error.message);
+  await query(
+    `update places set
+      name=$1, province=$2, category=$3, short_description=$4, full_details=$5,
+      main_image=$6, gallery=$7, visitor_experience=$8, status=$9,
+      destination_id=$10, youtube_url=$11, video_url=$12, updated_at=now()
+     where id=$13`,
+    [
+      formData.name,
+      formData.province,
+      formData.category,
+      formData.shortDescription,
+      formData.fullDetails,
+      formData.mainImage,
+      formData.gallery.filter(Boolean),
+      formData.visitorExperience,
+      formData.status,
+      formData.destinationId || null,
+      formData.youtubeUrl || null,
+      formData.videoUrl || null,
+      id,
+    ],
+  );
 
   // Replace all trip links (simplest approach for a small list)
-  await supabase.from("place_trips").delete().eq("place_id", id);
+  await query("delete from place_trips where place_id = $1", [id]);
   if (formData.linkedTripIds?.length) {
-    const links = formData.linkedTripIds.map((tripId) => ({
-      place_id: id,
-      trip_id: tripId,
-    }));
-    const { error: linkError } = await supabase
-      .from("place_trips")
-      .insert(links);
-    if (linkError) throw new Error(linkError.message);
+    for (const tripId of formData.linkedTripIds) {
+      await query(
+        "insert into place_trips (place_id, trip_id) values ($1, $2)",
+        [id, tripId],
+      );
+    }
   }
 
   revalidatePath("/admin/places");
@@ -125,92 +119,60 @@ export async function updatePlace(id, formData) {
 }
 
 export async function deletePlace(id) {
-  const supabase = await createClient();
-  const { error } = await supabase.from("places").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query("delete from places where id = $1", [id]);
 
   revalidatePath("/admin/places");
   revalidatePath("/places");
 }
 
 export async function getAllTripsForLinking() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("trips")
-    .select("id, title")
-    .order("title");
-
-  if (error) return [];
-  return data;
+  try {
+    return await query("select id, title from trips order by title asc");
+  } catch {
+    return [];
+  }
 }
 
 // ---- Theme (formerly "Destinations") management — now lives under Places ----
 
 export async function getThemes() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("destinations")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (error) throw new Error(error.message);
-  return data;
+  return query("select * from destinations order by sort_order asc");
 }
 
 export async function getThemeById(id) {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("destinations")
-    .select("*")
-    .eq("id", id)
-    .single();
-
-  if (error) throw new Error(error.message);
-  return data;
+  const rows = await query("select * from destinations where id = $1", [id]);
+  if (!rows[0]) throw new Error("Theme not found");
+  return rows[0];
 }
 
 export async function createTheme(formData) {
-  const supabase = await createClient();
+  await requireSession();
 
   const slug = formData.title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 
-  const { data, error } = await supabase
-    .from("destinations")
-    .insert({
-      slug,
-      title: formData.title,
-      tag: formData.tag,
-      intro: formData.intro,
-      img: formData.img,
-    })
-    .select()
-    .single();
-
-  if (error) throw new Error(error.message);
+  const rows = await query(
+    `insert into destinations (slug, title, tag, intro, img)
+     values ($1, $2, $3, $4, $5)
+     returning *`,
+    [slug, formData.title, formData.tag, formData.intro, formData.img],
+  );
 
   revalidatePath("/admin/places/themes");
   revalidatePath("/places");
   revalidatePath("/");
-  return data;
+  return rows[0];
 }
 
 export async function updateTheme(id, formData) {
-  const supabase = await createClient();
-
-  const { error } = await supabase
-    .from("destinations")
-    .update({
-      title: formData.title,
-      tag: formData.tag,
-      intro: formData.intro,
-      img: formData.img,
-    })
-    .eq("id", id);
-
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query(
+    "update destinations set title = $1, tag = $2, intro = $3, img = $4 where id = $5",
+    [formData.title, formData.tag, formData.intro, formData.img, id],
+  );
 
   revalidatePath("/admin/places/themes");
   revalidatePath("/places");
@@ -218,9 +180,8 @@ export async function updateTheme(id, formData) {
 }
 
 export async function deleteTheme(id) {
-  const supabase = await createClient();
-  const { error } = await supabase.from("destinations").delete().eq("id", id);
-  if (error) throw new Error(error.message);
+  await requireSession();
+  await query("delete from destinations where id = $1", [id]);
 
   revalidatePath("/admin/places/themes");
   revalidatePath("/places");
@@ -230,26 +191,27 @@ export async function deleteTheme(id) {
 // ---- Reordering — takes the full list of IDs in their new desired order ----
 
 export async function reorderPlaces(orderedIds) {
-  const supabase = await createClient();
-  const updates = orderedIds.map((id, index) =>
-    supabase.from("places").update({ sort_order: index }).eq("id", id),
+  await requireSession();
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      query("update places set sort_order = $1 where id = $2", [index, id]),
+    ),
   );
-  const results = await Promise.all(updates);
-  const failed = results.find((r) => r.error);
-  if (failed) throw new Error(failed.error.message);
 
   revalidatePath("/admin/places");
   revalidatePath("/places");
 }
 
 export async function reorderThemes(orderedIds) {
-  const supabase = await createClient();
-  const updates = orderedIds.map((id, index) =>
-    supabase.from("destinations").update({ sort_order: index }).eq("id", id),
+  await requireSession();
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      query("update destinations set sort_order = $1 where id = $2", [
+        index,
+        id,
+      ]),
+    ),
   );
-  const results = await Promise.all(updates);
-  const failed = results.find((r) => r.error);
-  if (failed) throw new Error(failed.error.message);
 
   revalidatePath("/admin/places/themes");
   revalidatePath("/places");

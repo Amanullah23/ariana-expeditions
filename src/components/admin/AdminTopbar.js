@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { createClient } from "@/lib/supabase/client";
+import { logoutAction, getCurrentAdminEmail } from "@/lib/authActions";
 import { useRouter } from "next/navigation";
 import NotificationBadge from "./NotificationBadge";
 import { useEffect, useState } from "react";
@@ -23,12 +23,10 @@ export default function AdminTopbar({ onMenuClick, notificationBadge }) {
 
   useEffect(() => {
     async function loadUser() {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (user?.user_metadata?.display_name) {
-        setDisplayName(user.user_metadata.display_name);
+      const email = await getCurrentAdminEmail();
+      if (email) {
+        const name = email.split("@")[0];
+        setDisplayName(name.charAt(0).toUpperCase() + name.slice(1));
       }
     }
     // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time load on mount, safe
@@ -36,8 +34,7 @@ export default function AdminTopbar({ onMenuClick, notificationBadge }) {
   }, []);
 
   async function handleLogout() {
-    const supabase = createClient();
-    await supabase.auth.signOut();
+    await logoutAction();
     router.push("/admin/login");
     router.refresh();
   }
@@ -45,7 +42,6 @@ export default function AdminTopbar({ onMenuClick, notificationBadge }) {
   return (
     <header className="sticky top-0 z-30 bg-cream border-b border-dark/10">
       <div className="flex items-center justify-between px-4 md:px-8 py-4">
-        {/* Mobile: hamburger. Desktop: welcome message */}
         <button
           onClick={onMenuClick}
           aria-label="Open menu"

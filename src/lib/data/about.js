@@ -1,43 +1,29 @@
-import { createClient } from "@/lib/supabase/public";
+import { query } from "@/lib/db";
 
 export async function getAboutIntro() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("about_intro")
-    .select("*")
-    .single();
-
-  if (error) {
-    console.error("Failed to load about intro:", error.message);
+  try {
+    const rows = await query("select * from about_intro limit 1");
+    return rows[0] || null;
+  } catch (err) {
+    console.error("Failed to load about intro:", err.message);
     return null;
   }
-  return data;
 }
 
 export async function getPublicFounders() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("founders")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (error) {
-    console.error("Failed to load founders:", error.message);
+  try {
+    return await query("select * from founders order by sort_order asc");
+  } catch (err) {
+    console.error("Failed to load founders:", err.message);
     return [];
   }
-  return data;
 }
 
 export async function getPublicLicenses() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("licenses")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (error) {
-    console.error("Failed to load licenses:", error.message);
+  try {
+    return await query("select * from licenses order by sort_order asc");
+  } catch (err) {
+    console.error("Failed to load licenses:", err.message);
     return [];
   }
-  return data;
 }

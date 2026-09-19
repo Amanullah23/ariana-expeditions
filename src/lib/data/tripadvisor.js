@@ -1,23 +1,20 @@
-import { createClient } from "@/lib/supabase/public";
+import { query } from "@/lib/db";
 
 export async function getTripAdvisorInfo() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("tripadvisor_info")
-    .select("*")
-    .single();
-
-  if (error) return null;
-  return data;
+  try {
+    const rows = await query("select * from tripadvisor_info limit 1");
+    return rows[0] || null;
+  } catch {
+    return null;
+  }
 }
 
 export async function getTripAdvisorReviews() {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("tripadvisor_reviews")
-    .select("*")
-    .order("sort_order", { ascending: true });
-
-  if (error) return [];
-  return data;
+  try {
+    return await query(
+      "select * from tripadvisor_reviews order by sort_order asc",
+    );
+  } catch {
+    return [];
+  }
 }

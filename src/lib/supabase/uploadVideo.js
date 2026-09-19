@@ -1,5 +1,4 @@
-import { createClient } from "@/lib/supabase/client";
-
+// src/lib/supabase/uploadVideo.js
 const MAX_VIDEO_SIZE = 20 * 1024 * 1024; // 20MB, hard limit
 
 export async function uploadVideo(file, folder = "videos") {
@@ -13,17 +12,15 @@ export async function uploadVideo(file, folder = "videos") {
     throw new Error("Please select a valid video file.");
   }
 
-  const supabase = createClient();
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("folder", folder);
 
-  const ext = file.name.split(".").pop();
-  const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-  const { error } = await supabase.storage
-    .from("site-images")
-    .upload(fileName, file, { cacheControl: "31536000", upsert: false });
-
-  if (error) throw new Error(error.message);
-
-  const { data } = supabase.storage.from("site-images").getPublicUrl(fileName);
-  return data.publicUrl;
+  const res = await fetch("/api/admin/upload", {
+    method: "POST",
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Upload failed");
+  return data.url;
 }

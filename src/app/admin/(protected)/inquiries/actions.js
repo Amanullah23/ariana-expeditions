@@ -1,27 +1,17 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 
 export async function getInquiries() {
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("inquiries")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) throw new Error(error.message);
-  return data;
+  await requireSession();
+  return query("select * from inquiries order by created_at desc");
 }
 
 export async function getPassportSignedUrl(path) {
   if (!path) return null;
-  const supabase = await createClient();
-  const { data, error } = await supabase.storage
-    .from("private-documents")
-    .createSignedUrl(path, 300); // valid for 5 minutes
-
-  if (error) {
-    console.error("Failed to generate signed URL:", error.message);
-    return null;
-  }
-  return data.signedUrl;
+  // Local disk storage has no time-limited signed URL like Supabase Storage did.
+  // Instead, access is checked live on every request by the session cookie
+  // inside /api/admin/passport — see that route handler. Equally private,
+  // just checked continuously rather than via a 5-minute expiring token.
+  return `/api/admin/passport?path=${encodeURIComponent(path)}`;
 }

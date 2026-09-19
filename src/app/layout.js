@@ -1,4 +1,10 @@
-import { Playfair_Display, Inter } from "next/font/google";
+import "@fontsource/inter/400.css";
+import "@fontsource/inter/500.css";
+import "@fontsource/inter/600.css";
+import "@fontsource/playfair-display/400.css";
+import "@fontsource/playfair-display/600.css";
+import "@fontsource/playfair-display/700.css";
+import "@fontsource/playfair-display/800.css";
 import "./globals.css";
 import BackToTop from "@/components/BackToTop";
 import WhatsAppButton from "@/components/WhatsAppButton";
@@ -7,18 +13,6 @@ import StructuredData from "@/components/StructuredData";
 import TopLoader from "@/components/TopLoader";
 import { Suspense } from "react";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
-
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  weight: ["400", "600", "700", "800"],
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  weight: ["400", "500", "600"],
-});
 
 export const metadata = {
   metadataBase: new URL("https://ariana-expeditions.com"),
@@ -54,7 +48,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" data-scroll-behavior="smooth">
-      <body className={`${playfair.variable} ${inter.variable}`}>
+      <body>
         <Suspense fallback={null}>
           <TopLoader />
         </Suspense>

@@ -1,11 +1,6 @@
-import { createClient } from "@supabase/supabase-js";
 import { headers } from "next/headers";
 import crypto from "crypto";
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-);
+import { query } from "@/lib/db";
 
 function getDeviceType(userAgent) {
   if (/mobile|android|iphone|ipad/i.test(userAgent || "")) return "Mobile";
@@ -22,6 +17,9 @@ export async function POST(request) {
       headersList.get("x-real-ip") ||
       "unknown";
     const userAgent = headersList.get("user-agent") || "";
+    // Note: x-vercel-ip-country was a Vercel-specific header — now that we're
+    // off Vercel, this will always read "Unknown" unless Momtaz's proxy sets
+    // an equivalent geo header. Left as-is; not worth solving right now.
     const country = headersList.get("x-vercel-ip-country") || "Unknown";
 
     // Anonymous daily-rotating hash — never store the real IP.
@@ -33,19 +31,20 @@ export async function POST(request) {
       .update(rawFingerprint)
       .digest("hex");
 
-    const { error } = await supabase.from("analytics_events").insert({
-      event_type: body.eventType || "pageview",
-      path: body.path || null,
-      action_name: body.actionName || null,
-      referrer: body.referrer || null,
-      country,
-      device: getDeviceType(userAgent),
-      visitor_hash: visitorHash,
-    });
-
-    if (error) {
-      console.error("Analytics insert failed:", error.message);
-    }
+    await query(
+      `insert into analytics_events
+        (event_type, path, action_name, referrer, country, device, visitor_hash)
+       values ($1, $2, $3, $4, $5, $6, $7)`,
+      [
+        body.eventType || "pageview",
+        body.path || null,
+        body.actionName || null,
+        body.referrer || null,
+        country,
+        getDeviceType(userAgent),
+        visitorHash,
+      ],
+    );
 
     return Response.json({ ok: true });
   } catch (err) {

@@ -1,22 +1,22 @@
 "use server";
-import { createClient } from "@/lib/supabase/server";
+import { query } from "@/lib/db";
+import { requireSession } from "@/lib/auth";
 
 export async function getAnalyticsSummary() {
-  const supabase = await createClient();
+  await requireSession();
 
   const now = new Date();
   const sevenDaysAgo = new Date(now - 7 * 24 * 60 * 60 * 1000);
   const thirtyDaysAgo = new Date(now - 30 * 24 * 60 * 60 * 1000);
   const fourteenDaysAgo = new Date(now - 14 * 24 * 60 * 60 * 1000);
 
-  const { data: allEvents, error } = await supabase
-    .from("analytics_events")
-    .select("*")
-    .gte("created_at", thirtyDaysAgo.toISOString())
-    .order("created_at", { ascending: true })
-    .limit(5000);
-
-  if (error) throw new Error(error.message);
+  const allEvents = await query(
+    `select * from analytics_events
+     where created_at >= $1
+     order by created_at asc
+     limit 5000`,
+    [thirtyDaysAgo],
+  );
 
   const pageviews = allEvents.filter((e) => e.event_type === "pageview");
   const actions = allEvents.filter((e) => e.event_type === "action");

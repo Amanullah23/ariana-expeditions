@@ -1,5 +1,4 @@
-import { createClient } from "@/lib/supabase/client";
-
+// src/lib/supabase/uploadPrivateDocument.js
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
 export async function uploadPrivateDocument(file, folder = "passports") {
@@ -9,18 +8,19 @@ export async function uploadPrivateDocument(file, folder = "passports") {
     );
   }
 
-  const supabase = createClient();
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("folder", folder);
+  formData.append("kind", "private");
 
-  const ext = file.name.split(".").pop();
-  const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-
-  const { error } = await supabase.storage
-    .from("private-documents")
-    .upload(fileName, file, { cacheControl: "31536000", upsert: false });
-
-  if (error) throw new Error(error.message);
-
-  // No public URL — this returns just the storage path, since the file is private.
-  // Viewing it later requires generating a time-limited signed URL from the admin panel.
-  return fileName;
+  const res = await fetch("/api/admin/upload", {
+    method: "POST",
+    body: formData,
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || "Upload failed");
+  // No public URL — this returns just the storage-relative path, since the
+  // file is private. Viewing it later goes through the admin-only
+  // /api/admin/passport route instead of a signed URL.
+  return data.path;
 }
